@@ -11,7 +11,7 @@ int main(){
 
     // condição ? valor se TRUE : valor se FALSE
     double maior = (a > b ? a : b);
-    cout << "Maior: " << maior;
+    cout << "Maior: " << maior << endl;
 
     return 0;
 }
