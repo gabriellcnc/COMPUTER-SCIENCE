@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exemplo — Display CSS</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f7f8fc;
+      color: #1a1a2e;
+      padding: 2rem;
+    }
+
+    .page-wrap { max-width: 900px; margin: 0 auto; }
+
+    h1 { font-size: 1.8rem; margin-bottom: .5rem; }
+    h2 {
+      font-size: 1.2rem;
+      margin: 2.5rem 0 .75rem;
+      color: #4a6cf7;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+    }
+    p  { margin-bottom: .75rem; line-height: 1.6; font-size: .95rem; }
+    code {
+      font-family: 'Consolas', monospace;
+      font-size: .875em;
+      background: #eef2ff;
+      color: #3558e0;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    a.voltar {
+      display: inline-block;
+      color: #4a6cf7;
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    a.voltar:hover { text-decoration: underline; }
+    .nota {
+      background: #eff6ff;
+      border-left: 4px solid #4a6cf7;
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: .9rem;
+      margin: 1rem 0;
+    }
+    pre {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-family: 'Consolas', monospace;
+      font-size: .85rem;
+      line-height: 1.7;
+      margin: .75rem 0 1rem;
+    }
+    pre .c { color: #585b70; font-style: italic; }
+
+    /* container de demos */
+    .demo-area {
+      background: #f0f4ff;
+      border: 2px dashed #93c5fd;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+
+    /* =====================
+       display: block
+       ===================== */
+    .ex-block {
+      display: block;
+      background: #93c5fd;
+      color: #1e3a5f;
+      padding: 10px 14px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: .9rem;
+      border-radius: 4px;
+    }
+
+    /* =====================
+       display: inline
+       ===================== */
+    .ex-inline {
+      display: inline;
+      background: #fde68a;
+      color: #5a3a00;
+      padding: 4px 8px;
+      font-weight: 700;
+      font-size: .9rem;
+      border-radius: 4px;
+    }
+    /* width e height não têm efeito em inline */
+    .ex-inline-tentativa {
+      display: inline;
+      background: #fde68a;
+      color: #5a3a00;
+      padding: 4px 8px;
+      width: 200px;   /* ignorado */
+      height: 60px;   /* ignorado */
+      font-size: .85rem;
+      border: 2px dashed red;
+    }
+
+    /* =====================
+       display: inline-block
+       ===================== */
+    .ex-ib {
+      display: inline-block;
+      background: #bbf7d0;
+      color: #1a4a2a;
+      padding: 10px 14px;
+      font-weight: 700;
+      font-size: .85rem;
+      border-radius: 4px;
+      vertical-align: top;
+    }
+    .ex-ib.sized {
+      width: 160px;
+      height: 70px;
+    }
+
+    /* =====================
+       display: none vs visibility
+       ===================== */
+    .none-demo {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      margin-bottom: .5rem;
+    }
+    .vis-box {
+      background: #e07070;
+      color: #fff;
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: .85rem;
+    }
+    .vis-box.hidden-none { display: none; }
+    .vis-box.hidden-vis  { visibility: hidden; }
+
+    /* =====================
+       Lista de navegação — inline vs block
+       ===================== */
+    .nav-block, .nav-inline, .nav-ib {
+      list-style: none;
+      background: #1e1e2e;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+    }
+    .nav-block li {
+      display: block;
+      color: #cdd6f4;
+      padding: 6px 10px;
+      border-bottom: 1px solid #313244;
+      font-size: .85rem;
+    }
+    .nav-inline li {
+      display: inline;
+      color: #cdd6f4;
+      padding: 0 12px;
+      font-size: .85rem;
+    }
+    .nav-ib li {
+      display: inline-block;
+      color: #cdd6f4;
+      padding: 8px 16px;
+      font-size: .85rem;
+      border-radius: 6px;
+      transition: background .15s;
+    }
+    .nav-ib li:hover { background: #313244; cursor: pointer; }
+
+    /* =====================
+       Botões block vs inline-block
+       ===================== */
+    .btn-block {
+      display: block;
+      background: #4a6cf7;
+      color: #fff;
+      text-align: center;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-weight: 700;
+      font-size: .9rem;
+      text-decoration: none;
+    }
+    .btn-ib {
+      display: inline-block;
+      background: #4a6cf7;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      margin: 4px;
+      font-weight: 700;
+      font-size: .9rem;
+      text-decoration: none;
+    }
+
+    /* =====================
+       Interatividade — toggle display
+       ===================== */
+    .toggle-wrap {
+      margin-bottom: 1.5rem;
+    }
+    .toggle-target {
+      background: #4a6cf7;
+      color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .toggle-btn {
+      background: #e07070;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: .9rem;
+      font-weight: 700;
+      font-family: inherit;
+    }
+    .toggle-btn:hover { background: #c05050; }
+
+    /* =====================
+       Table e outros
+       ===================== */
+    .other-values {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+    .ov-card {
+      background: var(--clr, #eef2ff);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: .85rem;
+      flex: 1 1 140px;
+    }
+    .ov-card strong { display: block; font-family: 'Consolas', monospace; margin-bottom: 4px; color: #3558e0; }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <a href="../index.html" class="voltar">← Voltar para a aula</a>
+  <h1>Exemplos — Display CSS</h1>
+
+  <!-- ---- BLOCK ---- -->
+  <h2>display: block</h2>
+  <p>Elementos block ocupam <strong>toda a largura disponível</strong> e sempre começam em uma nova linha. Você pode definir <code>width</code>, <code>height</code>, <code>margin</code> e <code>padding</code> em todas as direções.</p>
+  <div class="demo-area">
+    <div class="ex-block">Elemento block — ocupa tudo</div>
+    <div class="ex-block">Outro element block</div>
+    <div class="ex-block" style="width:50%">width: 50%</div>
+  </div>
+  <pre><code>div { display: block; }  <span class="c">/* padrão para div, p, h1-h6 … */</span></code></pre>
+
+  <!-- ---- INLINE ---- -->
+  <h2>display: inline</h2>
+  <p>Elementos inline ficam <strong>na mesma linha</strong> que o conteúdo ao redor. Eles só ocupam o espaço do conteúdo. <strong>Não aceitam</strong> <code>width</code> e <code>height</code>. As margens verticais são ignoradas.</p>
+  <div class="demo-area">
+    Texto comum
+    <span class="ex-inline">inline A</span>
+    mais texto
+    <span class="ex-inline">inline B</span>
+    e mais texto
+    <span class="ex-inline">inline C</span>
+  </div>
+  <p><strong>width e height são ignorados em elementos inline:</strong></p>
+  <div class="demo-area">
+    <span class="ex-inline-tentativa">width:200px e height:60px não funcionam aqui (inline)</span>
+  </div>
+  <pre><code>span { display: inline; }  <span class="c">/* padrão para span, a, strong … */</span>
+
+<span class="c">/* width e height são ignorados! */</span>
+span { width: 200px; height: 60px; }  <span class="c">/* sem efeito */</span></code></pre>
+
+  <!-- ---- INLINE-BLOCK ---- -->
+  <h2>display: inline-block</h2>
+  <p>Comporta-se como <code>inline</code> no fluxo (fica na mesma linha), mas aceita <code>width</code>, <code>height</code>, <code>padding</code> e <code>margin</code> verticais como um elemento block.</p>
+  <div class="demo-area">
+    <span class="ex-ib">inline-block</span>
+    <span class="ex-ib">inline-block</span>
+    <span class="ex-ib sized">inline-block<br><small>width:160 height:70</small></span>
+    <span class="ex-ib">inline-block</span>
+  </div>
+  <pre><code>.botao {
+  display: inline-block;
+  width: 160px;      <span class="c">/* agora funciona! */</span>
+  height: 40px;
+  padding: 8px 16px;
+  text-align: center;
+}</code></pre>
+
+  <!-- ---- NONE vs VISIBILITY ---- -->
+  <h2>display: none × visibility: hidden</h2>
+  <p>Ambos ocultam o elemento, mas de formas diferentes:</p>
+  <ul style="margin: 0 0 1rem 1.5rem; font-size:.9rem; line-height:1.8;">
+    <li><code>display: none</code> — remove o elemento do fluxo; não ocupa espaço.</li>
+    <li><code>visibility: hidden</code> — oculta visualmente, mas <strong>mantém o espaço</strong> no layout.</li>
+  </ul>
+  <div class="none-demo">
+    <div class="vis-box">Visível</div>
+    <div class="vis-box hidden-none">display: none (sumiu!)</div>
+    <div class="vis-box" style="background:#64748b">Após none</div>
+  </div>
+  <div class="none-demo">
+    <div class="vis-box">Visível</div>
+    <div class="vis-box hidden-vis">visibility: hidden (espaço mantido)</div>
+    <div class="vis-box" style="background:#64748b">Após hidden</div>
+  </div>
+  <pre><code>.oculto-none { display: none; }         <span class="c">/* sem espaço no layout */</span>
+.oculto-vis  { visibility: hidden; }    <span class="c">/* espaço mantido */</span></code></pre>
+
+  <!-- ---- CASO PRÁTICO: lista de nav ---- -->
+  <h2>Caso prático: lista de navegação</h2>
+  <p>Transformando o <code>&lt;ul&gt;</code> de block → inline → inline-block:</p>
+  <p><strong>block (padrão)</strong></p>
+  <ul class="nav-block">
+    <li>Home</li><li>Sobre</li><li>Portfólio</li><li>Contato</li>
+  </ul>
+  <p><strong>inline</strong></p>
+  <ul class="nav-inline">
+    <li>Home</li><li>Sobre</li><li>Portfólio</li><li>Contato</li>
+  </ul>
+  <p><strong>inline-block</strong> (com hover, padding vertical)</p>
+  <ul class="nav-ib">
+    <li>Home</li><li>Sobre</li><li>Portfólio</li><li>Contato</li>
+  </ul>
+
+  <!-- ---- BOTÕES ---- -->
+  <h2>Botões: block vs inline-block</h2>
+  <p><strong>block</strong> — ocupa toda a largura</p>
+  <a href="#" class="btn-block">Botão block</a>
+  <p><strong>inline-block</strong> — lado a lado</p>
+  <a href="#" class="btn-ib">Salvar</a>
+  <a href="#" class="btn-ib" style="background:#6abf6a">Publicar</a>
+  <a href="#" class="btn-ib" style="background:#e07070">Cancelar</a>
+
+  <!-- ---- TOGGLE ---- -->
+  <h2>Interativo: mostrar / ocultar com display: none</h2>
+  <div class="toggle-wrap">
+    <button class="toggle-btn" id="toggleBtn">Ocultar elemento</button>
+    <div class="toggle-target" id="toggleTarget">
+      Este elemento está visível. Clique no botão para ocultar com display: none!
+    </div>
+  </div>
+
+  <!-- ---- OUTROS VALORES ---- -->
+  <h2>Outros valores de display</h2>
+  <div class="other-values">
+    <div class="ov-card" style="--clr:#eef2ff"><strong>flex</strong>Ativa o Flexbox. Filhos se tornam flex items.</div>
+    <div class="ov-card" style="--clr:#f0fff4"><strong>grid</strong>Ativa o Grid Layout. Filhos se tornam grid items.</div>
+    <div class="ov-card" style="--clr:#fff0f0"><strong>inline-flex</strong>Como flex, mas o container é inline.</div>
+    <div class="ov-card" style="--clr:#fff8e7"><strong>table</strong>Simula comportamento de tabela HTML.</div>
+    <div class="ov-card" style="--clr:#f5eeff"><strong>contents</strong>O container desaparece; filhos sobem para o pai.</div>
+  </div>
+
+  <div class="nota">
+    <strong>Resumo rápido:</strong><br>
+    <code>block</code> → nova linha, aceita tudo.<br>
+    <code>inline</code> → na linha, não aceita width/height.<br>
+    <code>inline-block</code> → na linha + aceita width/height.<br>
+    <code>none</code> → invisível e sem espaço.<br>
+    <code>flex</code> / <code>grid</code> → modelos de layout modernos.
+  </div>
+
+</div>
+
+<script>
+  const btn    = document.getElementById('toggleBtn');
+  const target = document.getElementById('toggleTarget');
+  let visible  = true;
+
+  btn.addEventListener('click', () => {
+    visible = !visible;
+    target.style.display = visible ? 'block' : 'none';
+    btn.textContent = visible ? 'Ocultar elemento' : 'Mostrar elemento';
+  });
+</script>
+
+</body>
+</html>

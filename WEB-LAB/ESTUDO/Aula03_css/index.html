@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aula 03 — CSS: Box Model, Posicionamento e Display</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- CABEÇALHO -->
+  <header class="site-header">
+    <div class="header-inner">
+      <span class="badge">Aula 03</span>
+      <h1>CSS Fundamentos</h1>
+      <p class="subtitle">Box Model · Posicionamento · Display · <strong>Flexbox</strong></p>
+    </div>
+  </header>
+
+  <!-- NAVEGAÇÃO -->
+  <nav class="toc">
+    <ul>
+      <li><a href="#box-model">1. Box Model</a></li>
+      <li><a href="#posicionamento">2. Posicionamento</a></li>
+      <li><a href="#display">3. Display</a></li>
+      <li><a href="#flexbox">4. Flexbox</a>
+        <ul>
+          <li><a href="#flex-container">4.1 Container</a></li>
+          <li><a href="#flex-items">4.2 Itens</a></li>
+          <li><a href="#flex-exemplos">4.3 Exemplos Práticos</a></li>
+        </ul>
+      </li>
+      <li><a href="#exercicios">5. Exercícios</a></li>
+    </ul>
+  </nav>
+
+  <main class="content">
+
+    <!-- ===================== 1. BOX MODEL ===================== -->
+    <section id="box-model">
+      <h2><span class="num">1</span> Box Model</h2>
+      <p>Todo elemento HTML é tratado pelo browser como uma <strong>caixa retangular</strong>. Essa caixa é composta por quatro camadas concêntricas:</p>
+
+      <div class="box-model-diagram">
+        <div class="bm-margin">
+          <span class="bm-label">margin</span>
+          <div class="bm-border">
+            <span class="bm-label">border</span>
+            <div class="bm-padding">
+              <span class="bm-label">padding</span>
+              <div class="bm-content">
+                <span class="bm-label">content</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <table class="tabela">
+        <thead>
+          <tr><th>Camada</th><th>Descrição</th><th>Propriedade CSS</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>content</code></td><td>Área do conteúdo (texto, imagem…)</td><td><code>width</code> / <code>height</code></td></tr>
+          <tr><td><code>padding</code></td><td>Espaço interno entre o conteúdo e a borda</td><td><code>padding</code></td></tr>
+          <tr><td><code>border</code></td><td>Linha ao redor do padding</td><td><code>border</code></td></tr>
+          <tr><td><code>margin</code></td><td>Espaço externo entre o elemento e os vizinhos</td><td><code>margin</code></td></tr>
+        </tbody>
+      </table>
+
+      <h3>box-sizing</h3>
+      <p>Por padrão, <code>width</code> e <code>height</code> se referem apenas ao <em>content</em>. Usando <code>box-sizing: border-box</code>, <strong>padding e border são incluídos</strong> na dimensão declarada — comportamento muito mais previsível.</p>
+
+      <div class="code-block">
+        <pre><code><span class="c">/* Boa prática global */</span>
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+.caixa {
+  width: 200px;     <span class="c">/* largura TOTAL inclui padding e border */</span>
+  padding: 20px;
+  border: 2px solid #333;
+  margin: 16px;
+}</code></pre>
+      </div>
+
+      <h3>Demonstração</h3>
+      <div class="demo-row">
+        <div class="demo-box bm-content-box">
+          <p>content-box</p>
+          <small>width: 200px<br>+ padding: 20px<br>+ border: 4px<br>= <strong>248px</strong> no layout</small>
+        </div>
+        <div class="demo-box bm-border-box">
+          <p>border-box</p>
+          <small>width: 200px<br>padding e border<br>já estão incluídos<br>= <strong>200px</strong> no layout</small>
+        </div>
+      </div>
+
+      <div class="tip">
+        <strong>Dica:</strong> Sempre use <code>box-sizing: border-box</code> globalmente. Isso evita surpresas de tamanho ao adicionar padding ou border.
+      </div>
+
+      <p><a href="exemplos/box-model.html" class="btn">Ver exemplos interativos &rarr;</a></p>
+    </section>
+
+    <!-- ===================== 2. POSICIONAMENTO ===================== -->
+    <section id="posicionamento">
+      <h2><span class="num">2</span> Posicionamento</h2>
+      <p>A propriedade <code>position</code> controla como um elemento é colocado no documento. As propriedades de deslocamento (<code>top</code>, <code>right</code>, <code>bottom</code>, <code>left</code>) só funcionam em elementos posicionados (qualquer valor diferente de <code>static</code>).</p>
+
+      <table class="tabela">
+        <thead>
+          <tr><th>Valor</th><th>Referência</th><th>Fluxo do documento</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>static</code></td>
+            <td>Padrão. Segue o fluxo normal.</td>
+            <td>Permanece no fluxo</td>
+          </tr>
+          <tr>
+            <td><code>relative</code></td>
+            <td>Deslocado em relação à <strong>sua posição original</strong>.</td>
+            <td>Permanece no fluxo (ocupa espaço original)</td>
+          </tr>
+          <tr>
+            <td><code>absolute</code></td>
+            <td>Posicionado em relação ao <strong>ancestral posicionado</strong> mais próximo.</td>
+            <td>Removido do fluxo</td>
+          </tr>
+          <tr>
+            <td><code>fixed</code></td>
+            <td>Posicionado em relação à <strong>viewport</strong>. Não se move ao rolar.</td>
+            <td>Removido do fluxo</td>
+          </tr>
+          <tr>
+            <td><code>sticky</code></td>
+            <td>Relativo até atingir um limiar de scroll; então age como <em>fixed</em>.</td>
+            <td>Permanece no fluxo</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Exemplos de código</h3>
+      <div class="code-block">
+        <pre><code><span class="c">/* relative — desloca sem tirar do fluxo */</span>
+.destaque {
+  position: relative;
+  top: 10px;
+  left: 20px;
+}
+
+<span class="c">/* absolute — dentro de um pai com position: relative */</span>
+.container { position: relative; }
+
+.badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+<span class="c">/* fixed — barra de navegação sempre visível */</span>
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+<span class="c">/* sticky — cabeçalho que gruda no topo ao rolar */</span>
+.section-header {
+  position: sticky;
+  top: 0;
+  background: #fff;
+}</code></pre>
+      </div>
+
+      <h3>Demonstração visual</h3>
+      <div class="pos-demo-wrap">
+        <div class="pos-container">
+          <div class="pos-box pos-static">static</div>
+          <div class="pos-box pos-relative">relative<br><small>top:10 left:20</small></div>
+          <div class="pos-box pos-static">static</div>
+          <div class="pos-box pos-absolute">absolute<br><small>top:0 right:0</small></div>
+        </div>
+      </div>
+
+      <h3>z-index</h3>
+      <p>Quando elementos se sobrepõem, <code>z-index</code> define a ordem no eixo Z. Valores maiores ficam na frente. <strong>Só funciona em elementos posicionados.</strong></p>
+      <div class="code-block">
+        <pre><code>.fundo  { position: absolute; z-index: 1; }
+.frente { position: absolute; z-index: 10; } <span class="c">/* fica sobre .fundo */</span></code></pre>
+      </div>
+
+      <p><a href="exemplos/posicionamento.html" class="btn">Ver exemplos interativos &rarr;</a></p>
+    </section>
+
+    <!-- ===================== 3. DISPLAY ===================== -->
+    <section id="display">
+      <h2><span class="num">3</span> Display</h2>
+      <p>A propriedade <code>display</code> define o <em>modelo de formatação</em> do elemento. É a propriedade CSS mais importante para controle de layout.</p>
+
+      <table class="tabela">
+        <thead>
+          <tr><th>Valor</th><th>Comportamento</th><th>Exemplos de elementos</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>block</code></td>
+            <td>Ocupa toda a largura disponível. Começa em nova linha.</td>
+            <td><code>div</code>, <code>p</code>, <code>h1</code>–<code>h6</code></td>
+          </tr>
+          <tr>
+            <td><code>inline</code></td>
+            <td>Ocupa só o espaço do conteúdo. Não aceita width/height.</td>
+            <td><code>span</code>, <code>a</code>, <code>strong</code></td>
+          </tr>
+          <tr>
+            <td><code>inline-block</code></td>
+            <td>Inline no fluxo, mas aceita width/height/margin vertical.</td>
+            <td>Botões, ícones</td>
+          </tr>
+          <tr>
+            <td><code>none</code></td>
+            <td>Remove o elemento do fluxo e da renderização.</td>
+            <td>Elementos ocultos</td>
+          </tr>
+          <tr>
+            <td><code>flex</code></td>
+            <td>Ativa o Flexbox no container. Filhos tornam-se flex items.</td>
+            <td>Layouts 1D</td>
+          </tr>
+          <tr>
+            <td><code>grid</code></td>
+            <td>Ativa o Grid Layout no container.</td>
+            <td>Layouts 2D</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Demonstração</h3>
+      <div class="display-demo">
+        <span class="d-block">block</span>
+        <span class="d-inline">inline</span>
+        <span class="d-inline">inline</span>
+        <span class="d-inline">inline</span>
+        <span class="d-inline-block">inline-block<br>(200px)</span>
+        <span class="d-inline-block">inline-block<br>(200px)</span>
+      </div>
+
+      <p><a href="exemplos/display.html" class="btn">Ver exemplos interativos &rarr;</a></p>
+    </section>
+
+    <!-- ===================== 4. FLEXBOX ===================== -->
+    <section id="flexbox">
+      <h2><span class="num">4</span> Flexbox</h2>
+      <p>O <strong>Flexible Box Layout</strong> (Flexbox) é um modelo de layout <em>unidimensional</em> — trabalha em uma direção por vez (linha ou coluna). É ideal para alinhar, distribuir espaço e reordenar itens em um container, sem depender de floats ou posicionamento absoluto.</p>
+
+      <div class="flex-axes-diagram">
+        <div class="flex-axis-box">
+          <div class="axis-main">
+            <span>← eixo principal (main axis) →</span>
+          </div>
+          <div class="axis-cross-label">↑<br>eixo<br>cruzado<br>(cross axis)<br>↓</div>
+          <div class="axis-items">
+            <div class="axis-item">1</div>
+            <div class="axis-item">2</div>
+            <div class="axis-item">3</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4.1 CONTAINER -->
+      <h3 id="flex-container">4.1 Propriedades do Container (<code>display: flex</code>)</h3>
+      <p>Para ativar o Flexbox, aplique <code>display: flex</code> (ou <code>inline-flex</code>) no elemento pai. Todos os filhos diretos tornam-se <strong>flex items</strong>.</p>
+
+      <!-- flex-direction -->
+      <div class="prop-card">
+        <h4><code>flex-direction</code></h4>
+        <p>Define a direção do eixo principal.</p>
+        <div class="code-block">
+          <pre><code>.container {
+  display: flex;
+  flex-direction: row;            <span class="c">/* padrão: esquerda → direita */</span>
+  /* flex-direction: row-reverse; */   <span class="c">/* direita → esquerda */</span>
+  /* flex-direction: column; */        <span class="c">/* cima → baixo */</span>
+  /* flex-direction: column-reverse; */<span class="c">/* baixo → cima */</span>
+}</code></pre>
+        </div>
+        <div class="flex-demo-group">
+          <div>
+            <p class="demo-label">row</p>
+            <div class="fdemo fd-row">
+              <div class="fi">A</div><div class="fi">B</div><div class="fi">C</div>
+            </div>
+          </div>
+          <div>
+            <p class="demo-label">row-reverse</p>
+            <div class="fdemo fd-row-reverse">
+              <div class="fi">A</div><div class="fi">B</div><div class="fi">C</div>
+            </div>
+          </div>
+          <div>
+            <p class="demo-label">column</p>
+            <div class="fdemo fd-column">
+              <div class="fi">A</div><div class="fi">B</div><div class="fi">C</div>
+            </div>
+          </div>
+          <div>
+            <p class="demo-label">column-reverse</p>
+            <div class="fdemo fd-column-reverse">
+              <div class="fi">A</div><div class="fi">B</div><div class="fi">C</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- flex-wrap -->
+      <div class="prop-card">
+        <h4><code>flex-wrap</code></h4>
+        <p>Define se os itens podem quebrar para uma nova linha quando não há espaço suficiente.</p>
+        <div class="code-block">
+          <pre><code>.container {
+  display: flex;
+  flex-wrap: nowrap;   <span class="c">/* padrão: não quebra, comprime itens */</span>
+  flex-wrap: wrap;     <span class="c">/* quebra para a próxima linha */</span>
+  flex-wrap: wrap-reverse; <span class="c">/* quebra de baixo para cima */</span>
+}</code></pre>
+        </div>
+        <div class="flex-demo-group">
+          <div>
+            <p class="demo-label">nowrap (comprime)</p>
+            <div class="fdemo fd-nowrap">
+              <div class="fi fi-w">Item 1</div><div class="fi fi-w">Item 2</div>
+              <div class="fi fi-w">Item 3</div><div class="fi fi-w">Item 4</div>
+              <div class="fi fi-w">Item 5</div>
+            </div>
+          </div>
+          <div>
+            <p class="demo-label">wrap</p>
+            <div class="fdemo fd-wrap">
+              <div class="fi fi-w">Item 1</div><div class="fi fi-w">Item 2</div>
+              <div class="fi fi-w">Item 3</div><div class="fi fi-w">Item 4</div>
+              <div class="fi fi-w">Item 5</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- justify-content -->
+      <div class="prop-card">
+        <h4><code>justify-content</code></h4>
+        <p>Distribui os itens ao longo do <strong>eixo principal</strong>.</p>
+        <div class="code-block">
+          <pre><code>.container {
+  display: flex;
+  justify-content: flex-start;     <span class="c">/* padrão */</span>
+  justify-content: flex-end;
+  justify-content: center;
+  justify-content: space-between;  <span class="c">/* espaço entre (sem nas bordas) */</span>
+  justify-content: space-around;   <span class="c">/* espaço ao redor de cada item */</span>
+  justify-content: space-evenly;   <span class="c">/* espaços iguais em todos os lados */</span>
+}</code></pre>
+        </div>
+        <div class="jc-demos">
+          <div><p class="demo-label">flex-start</p>
+            <div class="fdemo jc-flex-start"><div class="fi">A</div><div class="fi">B</div><div class="fi">C</div></div></div>
+          <div><p class="demo-label">flex-end</p>
+            <div class="fdemo jc-flex-end"><div class="fi">A</div><div class="fi">B</div><div class="fi">C</div></div></div>
+          <div><p class="demo-label">center</p>
+            <div class="fdemo jc-center"><div class="fi">A</div><div class="fi">B</div><div class="fi">C</div></div></div>
+          <div><p class="demo-label">space-between</p>
+            <div class="fdemo jc-space-between"><div class="fi">A</div><div class="fi">B</div><div class="fi">C</div></div></div>
+          <div><p class="demo-label">space-around</p>
+            <div class="fdemo jc-space-around"><div class="fi">A</div><div class="fi">B</div><div class="fi">C</div></div></div>
+          <div><p class="demo-label">space-evenly</p>
+            <div class="fdemo jc-space-evenly"><div class="fi">A</div><div class="fi">B</div><div class="fi">C</div></div></div>
+        </div>
+      </div>
+
+      <!-- align-items -->
+      <div class="prop-card">
+        <h4><code>align-items</code></h4>
+        <p>Alinha os itens ao longo do <strong>eixo cruzado</strong> (perpendicular ao principal).</p>
+        <div class="code-block">
+          <pre><code>.container {
+  display: flex;
+  align-items: stretch;     <span class="c">/* padrão: estica para preencher */</span>
+  align-items: flex-start;  <span class="c">/* topo do container */</span>
+  align-items: flex-end;    <span class="c">/* fundo do container */</span>
+  align-items: center;      <span class="c">/* centralizado verticalmente */</span>
+  align-items: baseline;    <span class="c">/* alinha pela linha de base do texto */</span>
+}</code></pre>
+        </div>
+        <div class="ai-demos">
+          <div><p class="demo-label">flex-start</p>
+            <div class="fdemo ai-demo ai-flex-start">
+              <div class="fi fi-s">A</div><div class="fi fi-m">B</div><div class="fi fi-l">C</div>
+            </div>
+          </div>
+          <div><p class="demo-label">center</p>
+            <div class="fdemo ai-demo ai-center">
+              <div class="fi fi-s">A</div><div class="fi fi-m">B</div><div class="fi fi-l">C</div>
+            </div>
+          </div>
+          <div><p class="demo-label">flex-end</p>
+            <div class="fdemo ai-demo ai-flex-end">
+              <div class="fi fi-s">A</div><div class="fi fi-m">B</div><div class="fi fi-l">C</div>
+            </div>
+          </div>
+          <div><p class="demo-label">stretch</p>
+            <div class="fdemo ai-demo ai-stretch">
+              <div class="fi">A</div><div class="fi">B</div><div class="fi">C</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- align-content -->
+      <div class="prop-card">
+        <h4><code>align-content</code></h4>
+        <p>Alinha as <strong>linhas</strong> quando há múltiplas linhas (só tem efeito com <code>flex-wrap: wrap</code>).</p>
+        <div class="code-block">
+          <pre><code>.container {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  align-content: center;
+  align-content: flex-end;
+  align-content: space-between;
+  align-content: space-around;
+  align-content: stretch;   <span class="c">/* padrão */</span>
+}</code></pre>
+        </div>
+      </div>
+
+      <!-- gap -->
+      <div class="prop-card">
+        <h4><code>gap</code></h4>
+        <p>Espaçamento entre os itens (substitui a necessidade de margin). Aceita dois valores: <code>gap: row-gap column-gap</code>.</p>
+        <div class="code-block">
+          <pre><code>.container {
+  display: flex;
+  gap: 16px;         <span class="c">/* mesmo gap em linha e coluna */</span>
+  gap: 10px 24px;    <span class="c">/* row-gap colum-gap */</span>
+  row-gap: 10px;
+  column-gap: 24px;
+}</code></pre>
+        </div>
+        <div class="flex-demo-group">
+          <div><p class="demo-label">gap: 8px</p>
+            <div class="fdemo gap-8"><div class="fi">A</div><div class="fi">B</div><div class="fi">C</div></div></div>
+          <div><p class="demo-label">gap: 24px</p>
+            <div class="fdemo gap-24"><div class="fi">A</div><div class="fi">B</div><div class="fi">C</div></div></div>
+        </div>
+      </div>
+
+      <!-- 4.2 ITENS -->
+      <h3 id="flex-items">4.2 Propriedades dos Itens</h3>
+
+      <!-- flex-grow -->
+      <div class="prop-card">
+        <h4><code>flex-grow</code></h4>
+        <p>Define a capacidade de um item <strong>crescer</strong> para ocupar o espaço restante. O valor é uma proporção: um item com <code>flex-grow: 2</code> cresce o dobro de um com <code>flex-grow: 1</code>.</p>
+        <div class="code-block">
+          <pre><code>.item-a { flex-grow: 1; } <span class="c">/* ocupa 1 parte do espaço livre */</span>
+.item-b { flex-grow: 2; } <span class="c">/* ocupa 2 partes do espaço livre */</span>
+.item-c { flex-grow: 1; } <span class="c">/* ocupa 1 parte do espaço livre */</span></code></pre>
+        </div>
+        <div class="fdemo" style="display:flex; gap:8px; padding:8px;">
+          <div class="fi" style="flex-grow:1; background:#6c8ebf">grow: 1</div>
+          <div class="fi" style="flex-grow:2; background:#d6a84a">grow: 2</div>
+          <div class="fi" style="flex-grow:1; background:#6c8ebf">grow: 1</div>
+        </div>
+      </div>
+
+      <!-- flex-shrink -->
+      <div class="prop-card">
+        <h4><code>flex-shrink</code></h4>
+        <p>Define a capacidade de um item <strong>encolher</strong> quando o espaço é insuficiente. Padrão: <code>1</code>. Com <code>0</code>, o item não encolhe.</p>
+        <div class="code-block">
+          <pre><code>.item { flex-shrink: 1; }  <span class="c">/* padrão: encolhe proporcionalmente */</span>
+.item { flex-shrink: 0; }  <span class="c">/* não encolhe */</span></code></pre>
+        </div>
+      </div>
+
+      <!-- flex-basis -->
+      <div class="prop-card">
+        <h4><code>flex-basis</code></h4>
+        <p>Define o <strong>tamanho inicial</strong> de um item antes de o espaço livre ser distribuído. Pode ser um valor absoluto, percentual ou <code>auto</code> (padrão, usa width/height).</p>
+        <div class="code-block">
+          <pre><code>.item { flex-basis: auto; }   <span class="c">/* usa o tamanho do conteúdo */</span>
+.item { flex-basis: 200px; } <span class="c">/* tamanho base de 200px */</span>
+.item { flex-basis: 30%; }   <span class="c">/* 30% do container */</span></code></pre>
+        </div>
+      </div>
+
+      <!-- flex (shorthand) -->
+      <div class="prop-card highlight-card">
+        <h4><code>flex</code> — shorthand</h4>
+        <p>Combina <code>flex-grow</code>, <code>flex-shrink</code> e <code>flex-basis</code>. <strong>Prefira sempre o shorthand.</strong></p>
+        <div class="code-block">
+          <pre><code><span class="c">/* flex: grow shrink basis */</span>
+.item { flex: 1; }          <span class="c">/* flex: 1 1 0  — cresce e encolhe livremente */</span>
+.item { flex: auto; }       <span class="c">/* flex: 1 1 auto */</span>
+.item { flex: none; }       <span class="c">/* flex: 0 0 auto — tamanho fixo */</span>
+.item { flex: 0 1 200px; }  <span class="c">/* não cresce, pode encolher, base 200px */</span></code></pre>
+        </div>
+      </div>
+
+      <!-- align-self -->
+      <div class="prop-card">
+        <h4><code>align-self</code></h4>
+        <p>Sobrescreve o <code>align-items</code> do container para um item específico.</p>
+        <div class="code-block">
+          <pre><code>.container { display: flex; align-items: center; }
+
+.item-especial {
+  align-self: flex-end; <span class="c">/* vai para o fundo, ignorando o center do container */</span>
+}</code></pre>
+        </div>
+        <div class="fdemo ai-demo" style="display:flex; align-items:center; height:100px; gap:8px; padding:8px;">
+          <div class="fi">normal</div>
+          <div class="fi" style="align-self:flex-start">flex-start</div>
+          <div class="fi" style="align-self:flex-end; background:#e07070">flex-end</div>
+          <div class="fi" style="align-self:stretch">stretch</div>
+        </div>
+      </div>
+
+      <!-- order -->
+      <div class="prop-card">
+        <h4><code>order</code></h4>
+        <p>Controla a <strong>ordem visual</strong> dos itens sem alterar o HTML. Padrão: <code>0</code>. Itens com valor menor aparecem primeiro.</p>
+        <div class="code-block">
+          <pre><code>.item-1 { order: 3; }  <span class="c">/* aparece por último */</span>
+.item-2 { order: 1; }  <span class="c">/* aparece primeiro */</span>
+.item-3 { order: 2; }  <span class="c">/* aparece segundo */</span></code></pre>
+        </div>
+        <div class="fdemo" style="display:flex; gap:8px; padding:8px;">
+          <div class="fi" style="order:3">HTML: 1<br><small>order: 3</small></div>
+          <div class="fi" style="order:1; background:#6abf6a">HTML: 2<br><small>order: 1</small></div>
+          <div class="fi" style="order:2">HTML: 3<br><small>order: 2</small></div>
+        </div>
+      </div>
+
+      <!-- 4.3 EXEMPLOS PRÁTICOS -->
+      <h3 id="flex-exemplos">4.3 Exemplos Práticos</h3>
+
+      <!-- Centralização perfeita -->
+      <div class="prop-card highlight-card">
+        <h4>Centralização perfeita (horizontal + vertical)</h4>
+        <p>O truque mais famoso do Flexbox — antes muito difícil sem hacks.</p>
+        <div class="code-block">
+          <pre><code>.centralizado {
+  display: flex;
+  justify-content: center; <span class="c">/* eixo principal */</span>
+  align-items: center;     <span class="c">/* eixo cruzado */</span>
+  height: 200px;
+}</code></pre>
+        </div>
+        <div style="display:flex; justify-content:center; align-items:center; height:120px; background:#f0f4ff; border-radius:8px; border:2px dashed #6c8ebf;">
+          <div class="fi" style="background:#6c8ebf; color:#fff; padding:16px 24px; font-size:1rem;">Centralizado!</div>
+        </div>
+      </div>
+
+      <!-- Navbar -->
+      <div class="prop-card">
+        <h4>Barra de navegação</h4>
+        <div class="code-block">
+          <pre><code>.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.nav-logo { font-weight: bold; }
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  list-style: none;
+}</code></pre>
+        </div>
+        <nav style="display:flex; justify-content:space-between; align-items:center; padding:12px 24px; background:#1e1e2e; border-radius:8px; color:#fff;">
+          <span style="font-weight:700; font-size:1.1rem; color:#a6e3a1;">MeuSite</span>
+          <ul style="display:flex; gap:24px; list-style:none; margin:0; padding:0;">
+            <li><a style="color:#cdd6f4; text-decoration:none;">Home</a></li>
+            <li><a style="color:#cdd6f4; text-decoration:none;">Sobre</a></li>
+            <li><a style="color:#cdd6f4; text-decoration:none;">Contato</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Card layout -->
+      <div class="prop-card">
+        <h4>Grid de Cards responsivo</h4>
+        <div class="code-block">
+          <pre><code>.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.card {
+  flex: 1 1 250px; <span class="c">/* cresce, pode encolher, base 250px */</span>
+  padding: 16px;
+  border-radius: 8px;
+  background: #f5f5f5;
+}</code></pre>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:12px;">
+          <div style="flex:1 1 150px; padding:16px; background:#e8f4fd; border-radius:8px; border-left:4px solid #6c8ebf;">
+            <strong>Card A</strong><p style="margin:4px 0 0;font-size:.9rem;color:#555">Conteúdo do card A</p>
+          </div>
+          <div style="flex:1 1 150px; padding:16px; background:#fef9e7; border-radius:8px; border-left:4px solid #d6a84a;">
+            <strong>Card B</strong><p style="margin:4px 0 0;font-size:.9rem;color:#555">Conteúdo do card B</p>
+          </div>
+          <div style="flex:1 1 150px; padding:16px; background:#f0fff4; border-radius:8px; border-left:4px solid #6abf6a;">
+            <strong>Card C</strong><p style="margin:4px 0 0;font-size:.9rem;color:#555">Conteúdo do card C</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layout com sidebar -->
+      <div class="prop-card">
+        <h4>Layout de página com sidebar</h4>
+        <div class="code-block">
+          <pre><code>.pagina {
+  display: flex;
+  gap: 24px;
+  min-height: 400px;
+}
+
+.sidebar {
+  flex: 0 0 220px;  <span class="c">/* largura fixa, não cresce nem encolhe */</span>
+}
+
+.conteudo-principal {
+  flex: 1;          <span class="c">/* ocupa todo o espaço restante */</span>
+}</code></pre>
+        </div>
+        <div style="display:flex; gap:12px; min-height:100px; margin-top:12px; font-size:.9rem;">
+          <div style="flex:0 0 120px; background:#1e1e2e; color:#cdd6f4; padding:12px; border-radius:8px;">
+            <strong style="color:#a6e3a1">Sidebar</strong><br>
+            <small>flex: 0 0 120px</small>
+          </div>
+          <div style="flex:1; background:#f5f5f5; padding:12px; border-radius:8px;">
+            <strong>Conteúdo Principal</strong><br>
+            <small>flex: 1 — ocupa o resto</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabela resumo -->
+      <h3>Resumo de todas as propriedades</h3>
+      <table class="tabela tabela-flex">
+        <thead>
+          <tr><th colspan="3">Propriedades do Container</th></tr>
+          <tr><th>Propriedade</th><th>Valores principais</th><th>Padrão</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>flex-direction</code></td><td>row, row-reverse, column, column-reverse</td><td>row</td></tr>
+          <tr><td><code>flex-wrap</code></td><td>nowrap, wrap, wrap-reverse</td><td>nowrap</td></tr>
+          <tr><td><code>flex-flow</code></td><td>shorthand: direction + wrap</td><td>row nowrap</td></tr>
+          <tr><td><code>justify-content</code></td><td>flex-start, flex-end, center, space-between, space-around, space-evenly</td><td>flex-start</td></tr>
+          <tr><td><code>align-items</code></td><td>stretch, flex-start, flex-end, center, baseline</td><td>stretch</td></tr>
+          <tr><td><code>align-content</code></td><td>flex-start, flex-end, center, space-between, space-around, stretch</td><td>stretch</td></tr>
+          <tr><td><code>gap</code></td><td>valor / row-gap column-gap</td><td>0</td></tr>
+        </tbody>
+        <thead>
+          <tr><th colspan="3">Propriedades dos Itens</th></tr>
+          <tr><th>Propriedade</th><th>Valores principais</th><th>Padrão</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>flex-grow</code></td><td>número (proporção)</td><td>0</td></tr>
+          <tr><td><code>flex-shrink</code></td><td>número (proporção)</td><td>1</td></tr>
+          <tr><td><code>flex-basis</code></td><td>auto, tamanho, %</td><td>auto</td></tr>
+          <tr><td><code>flex</code></td><td>grow shrink basis (shorthand)</td><td>0 1 auto</td></tr>
+          <tr><td><code>align-self</code></td><td>auto, flex-start, flex-end, center, stretch, baseline</td><td>auto</td></tr>
+          <tr><td><code>order</code></td><td>número inteiro</td><td>0</td></tr>
+        </tbody>
+      </table>
+
+      <p><a href="exemplos/flexbox.html" class="btn">Ver exemplos interativos de Flexbox &rarr;</a></p>
+    </section>
+
+    <!-- ===================== 5. EXERCÍCIOS ===================== -->
+    <section id="exercicios">
+      <h2><span class="num">5</span> Exercícios</h2>
+
+      <div class="exercicio">
+        <span class="ex-num">01</span>
+        <div>
+          <h4>Box Model</h4>
+          <p>Crie um <code>&lt;div&gt;</code> com <code>width: 300px</code>, <code>padding: 20px</code>, <code>border: 3px solid red</code> e <code>margin: 40px</code>. Compare o tamanho final usando <code>box-sizing: content-box</code> versus <code>border-box</code>. Use as DevTools do browser (F12) para inspecionar.</p>
+        </div>
+      </div>
+
+      <div class="exercicio">
+        <span class="ex-num">02</span>
+        <div>
+          <h4>Posicionamento</h4>
+          <p>Crie um card com imagem e um badge "NOVO" no canto superior direito. Use <code>position: relative</code> no card e <code>position: absolute</code> no badge.</p>
+        </div>
+      </div>
+
+      <div class="exercicio">
+        <span class="ex-num">03</span>
+        <div>
+          <h4>Display</h4>
+          <p>Transforme uma lista <code>&lt;ul&gt;</code> horizontal usando <code>display: inline</code> nos <code>&lt;li&gt;</code>. Depois mude para <code>inline-block</code> e adicione <code>padding</code> e <code>width</code> — observe a diferença.</p>
+        </div>
+      </div>
+
+      <div class="exercicio">
+        <span class="ex-num">04</span>
+        <div>
+          <h4>Flexbox — Navbar</h4>
+          <p>Crie uma barra de navegação com logo à esquerda, links no centro e um botão "Login" à direita usando apenas Flexbox.</p>
+        </div>
+      </div>
+
+      <div class="exercicio">
+        <span class="ex-num">05</span>
+        <div>
+          <h4>Flexbox — Layout completo</h4>
+          <p>Monte um layout de página completo com: header, navbar horizontal, area principal (sidebar + conteúdo), e footer. Use <strong>somente Flexbox</strong> para o posicionamento.</p>
+        </div>
+      </div>
+
+      <div class="exercicio">
+        <span class="ex-num">06</span>
+        <div>
+          <h4>Flexbox — Grid de cards responsivo</h4>
+          <p>Crie 6 cards com <code>flex: 1 1 200px</code> e <code>flex-wrap: wrap</code>. Observe como eles se reorganizam ao redimensionar a janela.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>WebLab — Aula 03 &mdash; CSS: Box Model, Posicionamento &amp; Display/Flexbox</p>
+  </footer>
+
+</body>
+</html>

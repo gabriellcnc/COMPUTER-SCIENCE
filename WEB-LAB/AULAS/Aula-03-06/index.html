@@ -1,0 +1,36 @@
+
+<!-- 
+Faça um programa que crie uma lista de tarefas.
+
+Deve ter um input para a descrição da tarefa, um botão adicionar e a lista de tarefas.
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tarefas</title>
+</head>
+<body>
+    <h1>Lista de Tarefas</h1>
+    <input type="text" id="entrada" placeholder="Insira a tarefa">
+    <button id="adicionar">Adicionar</button>
+    <ul id="lista"></ul>
+    <script>
+        const entrada = document.getElementById('entrada');
+        const adicionar = document.getElementById('adicionar');
+        const lista = document.getElementById('lista');
+
+        adicionar.addEventListener('click', () => {
+            const tarefa = entrada.value.trim();
+            if (tarefa) {
+                const li = document.createElement('li');
+                li.textContent = tarefa;
+                lista.appendChild(li);
+                entrada.value = '';
+            }
+        });
+    </script>
+</body>
+</html>

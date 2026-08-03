@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A História da Web — Odisseia Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0f;
+    --parchment: #e8dcc8;
+    --gold: #c9a84c;
+    --gold-bright: #f0d070;
+    --silver: #a8b8c8;
+    --rust: #8b3a2a;
+    --glow: rgba(201,168,76,0.35);
+    --fog: rgba(10,10,15,0.72);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'IM Fell English', Georgia, serif;
+    background: var(--ink);
+    color: var(--parchment);
+    overflow-x: hidden;
+  }
+
+  /* ─── CANVAS STARS ─── */
+  #starfield {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* ─── ANIMATED GEARS (CSS only) ─── */
+  .gear-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .gear {
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    opacity: 0.12;
+    animation: spin linear infinite;
+  }
+  .gear::before, .gear::after {
+    content: '';
+    position: absolute;
+    background: var(--gold);
+    border-radius: 2px;
+    opacity: 0.8;
+  }
+  /* teeth via box-shadow trick */
+  .gear svg {
+    width: 100%; height: 100%;
+    animation: inherit;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes spin-rev { to { transform: rotate(-360deg); } }
+
+  .g1 { width:340px; height:340px; top:-60px; left:-80px; animation-duration:38s; }
+  .g2 { width:220px; height:220px; top:30px; left:180px; animation-duration:22s; animation-name:spin-rev; }
+  .g3 { width:480px; height:480px; top:-120px; right:-140px; animation-duration:55s; }
+  .g4 { width:160px; height:160px; bottom:10%; right:8%; animation-duration:18s; animation-name:spin-rev; }
+  .g5 { width:260px; height:260px; bottom:-60px; left:15%; animation-duration:30s; }
+
+  /* ─── FLOATING PARTICLES ─── */
+  .particles { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    background: var(--gold-bright);
+    border-radius: 50%;
+    animation: float-up linear infinite;
+    opacity: 0;
+  }
+  @keyframes float-up {
+    0%   { opacity: 0; transform: translateY(0) scale(0); }
+    10%  { opacity: 0.9; }
+    90%  { opacity: 0.4; }
+    100% { opacity: 0; transform: translateY(-100vh) scale(1.5); }
+  }
+
+  /* ─── MOON ─── */
+  .moon-wrap {
+    position: fixed;
+    top: 6vh; right: 8vw;
+    z-index: 2;
+    pointer-events: none;
+    animation: moon-bob 7s ease-in-out infinite;
+  }
+  @keyframes moon-bob {
+    0%,100% { transform: translateY(0) rotate(-2deg); }
+    50%      { transform: translateY(-18px) rotate(2deg); }
+  }
+  .moon {
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 38%, #f5e87a, #c9a84c 55%, #6b4a10);
+    box-shadow:
+      0 0 30px 10px rgba(201,168,76,0.5),
+      0 0 80px 30px rgba(201,168,76,0.15),
+      inset -8px -4px 0 rgba(0,0,0,0.25);
+  }
+  .moon::after {
+    content: '';
+    position: absolute;
+    width: 65%; height: 100%;
+    top: 0; right: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle at 60% 40%, rgba(0,0,0,0.35), transparent 70%);
+  }
+  .moon-glow {
+    position: absolute;
+    inset: -20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.18) 0%, transparent 70%);
+    animation: pulse-glow 4s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%,100% { transform: scale(1); opacity: 0.6; }
+    50%      { transform: scale(1.15); opacity: 1; }
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.2rem 3rem;
+    background: linear-gradient(to bottom, rgba(10,10,15,0.95), transparent);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+  }
+  .nav-brand {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    letter-spacing: 0.12em;
+    text-shadow: 0 0 20px var(--gold);
+  }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    color: var(--silver);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s, text-shadow 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold-bright); text-shadow: 0 0 12px var(--gold); }
+
+  /* ─── HERO ─── */
+  #home {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+    overflow: hidden;
+  }
+
+  .hero-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(2.8rem, 7vw, 6rem);
+    font-weight: 900;
+    color: var(--gold-bright);
+    line-height: 1.05;
+    letter-spacing: 0.04em;
+    text-shadow:
+      0 0 40px var(--gold),
+      0 0 80px rgba(201,168,76,0.4),
+      2px 2px 0 rgba(0,0,0,0.6);
+    animation: title-enter 1.4s cubic-bezier(.16,1,.3,1) both;
+  }
+  @keyframes title-enter {
+    from { opacity: 0; transform: translateY(50px) scale(0.9); letter-spacing: 0.2em; }
+    to   { opacity: 1; transform: translateY(0) scale(1); letter-spacing: 0.04em; }
+  }
+
+  .hero-subtitle {
+    font-size: clamp(1rem, 2.2vw, 1.3rem);
+    color: var(--silver);
+    margin-top: 0.8rem;
+    font-style: italic;
+    letter-spacing: 0.08em;
+    animation: fade-in 2s 0.6s both;
+  }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-divider {
+    margin: 2rem auto;
+    width: 280px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    animation: fade-in 2s 1s both;
+  }
+
+  .hero-desc {
+    max-width: 600px;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: var(--parchment);
+    opacity: 0.85;
+    animation: fade-in 2s 1.2s both;
+  }
+
+  .cta-row {
+    display: flex;
+    gap: 1.4rem;
+    margin-top: 2.8rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fade-in 2s 1.5s both;
+  }
+
+  .btn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 0.9rem 2.2rem;
+    border: 1px solid var(--gold);
+    color: var(--gold-bright);
+    background: rgba(201,168,76,0.06);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.35s;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  }
+  .btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    opacity: 0;
+    transition: opacity 0.35s;
+    clip-path: inherit;
+  }
+  .btn:hover { color: var(--ink); text-shadow: none; }
+  .btn:hover::before { opacity: 1; }
+  .btn span { position: relative; z-index: 1; }
+
+  .scroll-cue {
+    margin-top: 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    animation: fade-in 2s 2s both;
+  }
+  .scroll-cue p {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--silver);
+    font-family: 'Cinzel', serif;
+  }
+  .scroll-line {
+    width: 1px; height: 50px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scroll-drop 1.8s ease-in-out infinite;
+  }
+  @keyframes scroll-drop {
+    0%,100% { transform: scaleY(0); transform-origin: top; opacity: 0; }
+    50%      { transform: scaleY(1); opacity: 1; }
+  }
+
+  /* ─── SECTIONS ─── */
+  .section {
+    position: relative;
+    z-index: 10;
+    padding: 8rem 2rem;
+  }
+  .section-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .section-label {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .section-label::after {
+    content: '';
+    height: 1px;
+    width: 60px;
+    background: var(--gold);
+    opacity: 0.5;
+  }
+  .section-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    color: var(--gold-bright);
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 30px rgba(201,168,76,0.3);
+  }
+  .section-body {
+    font-size: 1.08rem;
+    line-height: 1.85;
+    color: var(--parchment);
+    opacity: 0.88;
+    max-width: 680px;
+  }
+
+  /* ─── TIMELINE ─── */
+  #historia { background: linear-gradient(to bottom, transparent, rgba(20,14,5,0.6), transparent); }
+
+  .timeline {
+    position: relative;
+    margin-top: 5rem;
+    padding-left: 3rem;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--gold) 10%, var(--gold) 90%, transparent);
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 4.5rem;
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .tl-item.visible { opacity: 1; transform: translateX(0); }
+
+  .tl-dot {
+    position: absolute;
+    left: -3.6rem;
+    top: 0.3rem;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--ink);
+    border: 2px solid var(--gold);
+    box-shadow: 0 0 12px var(--gold);
+  }
+  .tl-dot::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background: var(--gold-bright);
+  }
+
+  .tl-year {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    opacity: 0.35;
+    position: absolute;
+    left: -10rem;
+    top: -0.2rem;
+    line-height: 1;
+  }
+
+  .tl-content {
+    border: 1px solid rgba(201,168,76,0.2);
+    background: rgba(201,168,76,0.04);
+    padding: 1.8rem 2rem;
+    position: relative;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+  }
+  .tl-content::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.08) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .tl-era {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .tl-heading {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.35rem;
+    color: var(--gold-bright);
+    margin-bottom: 0.8rem;
+  }
+  .tl-text { font-size: 0.97rem; line-height: 1.78; color: var(--parchment); opacity: 0.85; }
+
+  /* ─── ERAS GRID ─── */
+  #eras { background: linear-gradient(to bottom, transparent, rgba(8,5,0,0.5), transparent); }
+
+  .eras-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .era-card {
+    border: 1px solid rgba(201,168,76,0.22);
+    background: rgba(201,168,76,0.03);
+    padding: 2.2rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.4s, border-color 0.4s;
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  .era-card.visible { opacity: 1; transform: translateY(0); transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.4s; }
+  .era-card:hover { border-color: rgba(201,168,76,0.6); transform: translateY(-4px) !important; }
+  .era-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .era-num {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 3rem;
+    color: var(--gold);
+    opacity: 0.15;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  .era-name {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+  }
+  .era-title {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1.15rem;
+    color: var(--gold-bright);
+    margin-bottom: 0.8rem;
+    line-height: 1.3;
+  }
+  .era-desc { font-size: 0.92rem; line-height: 1.72; color: var(--parchment); opacity: 0.8; }
+
+  /* ─── PIONEERS ─── */
+  #pioneiros { background: linear-gradient(to bottom, transparent, rgba(15,8,2,0.6), transparent); }
+  .pioneers-row {
+    display: flex;
+    gap: 2rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+  }
+  .pioneer {
+    flex: 1 1 200px;
+    border-top: 2px solid var(--gold);
+    padding-top: 1.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+  .pioneer.visible { opacity: 1; transform: translateY(0); }
+  .pioneer-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 1rem;
+    color: var(--gold-bright);
+    margin-bottom: 0.3rem;
+  }
+  .pioneer-role {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-bottom: 0.8rem;
+  }
+  .pioneer-bio { font-size: 0.9rem; line-height: 1.7; color: var(--parchment); opacity: 0.8; }
+
+  /* ─── QUOTE ─── */
+  .quote-section {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 6rem 2rem;
+    background: radial-gradient(ellipse at center, rgba(201,168,76,0.06) 0%, transparent 70%);
+  }
+  .quote-mark {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 6rem;
+    color: var(--gold);
+    opacity: 0.15;
+    line-height: 0.6;
+    display: block;
+    margin-bottom: 1rem;
+  }
+  .quote-text {
+    font-size: clamp(1.2rem, 3vw, 1.75rem);
+    font-style: italic;
+    color: var(--gold-bright);
+    max-width: 780px;
+    margin: 0 auto;
+    line-height: 1.6;
+    text-shadow: 0 0 30px rgba(201,168,76,0.2);
+  }
+  .quote-author {
+    margin-top: 1.5rem;
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--silver);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 3rem 2rem;
+    border-top: 1px solid rgba(201,168,76,0.15);
+  }
+  footer p {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--silver);
+    opacity: 0.55;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--ink); }
+  ::-webkit-scrollbar-thumb { background: var(--gold); opacity: 0.5; }
+</style>
+</head>
+<body>
+
+<canvas id="starfield"></canvas>
+
+<!-- Gears SVG layer -->
+<div class="gear-layer" aria-hidden="true">
+  <svg style="position:absolute;top:-70px;left:-90px;width:360px;height:360px;opacity:0.13;animation:spin 40s linear infinite;" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" stroke="#c9a84c" stroke-width="3">
+      <circle cx="100" cy="100" r="80"/>
+      <circle cx="100" cy="100" r="55"/>
+      <circle cx="100" cy="100" r="18"/>
+      <line x1="100" y1="20" x2="100" y2="45"/>
+      <line x1="100" y1="155" x2="100" y2="180"/>
+      <line x1="20" y1="100" x2="45" y2="100"/>
+      <line x1="155" y1="100" x2="180" y2="100"/>
+      <line x1="35" y1="35" x2="52" y2="52"/>
+      <line x1="148" y1="148" x2="165" y2="165"/>
+      <line x1="165" y1="35" x2="148" y2="52"/>
+      <line x1="52" y1="148" x2="35" y2="165"/>
+    </g>
+  </svg>
+  <svg style="position:absolute;top:20px;right:-100px;width:500px;height:500px;opacity:0.1;animation:spin-rev 65s linear infinite;" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" stroke="#c9a84c" stroke-width="2.5">
+      <circle cx="100" cy="100" r="90"/>
+      <circle cx="100" cy="100" r="68"/>
+      <circle cx="100" cy="100" r="25"/>
+      <line x1="100" y1="10" x2="100" y2="32"/>
+      <line x1="100" y1="168" x2="100" y2="190"/>
+      <line x1="10" y1="100" x2="32" y2="100"/>
+      <line x1="168" y1="100" x2="190" y2="100"/>
+      <line x1="26" y1="26" x2="44" y2="44"/>
+      <line x1="156" y1="156" x2="174" y2="174"/>
+      <line x1="174" y1="26" x2="156" y2="44"/>
+      <line x1="44" y1="156" x2="26" y2="174"/>
+      <line x1="63" y1="14" x2="68" y2="35"/>
+      <line x1="132" y1="165" x2="137" y2="186"/>
+      <line x1="14" y1="63" x2="35" y2="68"/>
+      <line x1="165" y1="132" x2="186" y2="137"/>
+    </g>
+  </svg>
+  <svg style="position:absolute;bottom:-50px;left:10%;width:280px;height:280px;opacity:0.1;animation:spin 35s linear infinite;" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" stroke="#c9a84c" stroke-width="3">
+      <circle cx="100" cy="100" r="75"/>
+      <circle cx="100" cy="100" r="48"/>
+      <circle cx="100" cy="100" r="15"/>
+      <line x1="100" y1="25" x2="100" y2="52"/>
+      <line x1="100" y1="148" x2="100" y2="175"/>
+      <line x1="25" y1="100" x2="52" y2="100"/>
+      <line x1="148" y1="100" x2="175" y2="100"/>
+      <line x1="40" y1="40" x2="55" y2="55"/>
+      <line x1="145" y1="145" x2="160" y2="160"/>
+      <line x1="160" y1="40" x2="145" y2="55"/>
+      <line x1="55" y1="145" x2="40" y2="160"/>
+    </g>
+  </svg>
+  <svg style="position:absolute;bottom:5%;right:5%;width:180px;height:180px;opacity:0.12;animation:spin-rev 22s linear infinite;" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <g fill="none" stroke="#c9a84c" stroke-width="4">
+      <circle cx="100" cy="100" r="70"/>
+      <circle cx="100" cy="100" r="40"/>
+      <circle cx="100" cy="100" r="12"/>
+      <line x1="100" y1="30" x2="100" y2="60"/>
+      <line x1="100" y1="140" x2="100" y2="170"/>
+      <line x1="30" y1="100" x2="60" y2="100"/>
+      <line x1="140" y1="100" x2="170" y2="100"/>
+    </g>
+  </svg>
+</div>
+
+<!-- Particles -->
+<div class="particles" id="particles" aria-hidden="true"></div>
+
+<!-- Moon -->
+<div class="moon-wrap" aria-hidden="true">
+  <div class="moon-glow"></div>
+  <div class="moon"></div>
+</div>
+
+<!-- Nav -->
+<nav>
+  <span class="nav-brand">⚙ Web Historia</span>
+  <ul class="nav-links">
+    <li><a href="#home">Início</a></li>
+    <li><a href="#historia">Linha do Tempo</a></li>
+    <li><a href="#eras">Eras</a></li>
+    <li><a href="#pioneiros">Pioneiros</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <h1 class="hero-title">A Odisseia<br>da Web</h1>
+  <p class="hero-subtitle">Uma jornada através dos séculos digitais</p>
+  <div class="hero-divider"></div>
+  <p class="hero-desc">
+    Da primeira centelha de uma ideia nos laboratórios do CERN até os mundos
+    virtuais que hoje habitamos — cada clique ressoa com décadas de gênio humano.
+  </p>
+  <div class="cta-row">
+    <a href="#historia" class="btn"><span>Explorar</span></a>
+    <a href="#pioneiros" class="btn"><span>Pioneiros</span></a>
+  </div>
+  <div class="scroll-cue">
+    <p>Descer</p>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<div class="quote-section">
+  <span class="quote-mark">"</span>
+  <p class="quote-text">
+    A Web não é uma tecnologia — é um espelho da humanidade,
+    refletindo nossos sonhos, medos e a insaciável sede de conexão.
+  </p>
+  <p class="quote-author">— Tim Berners-Lee, Inventor da World Wide Web</p>
+</div>
+
+<!-- TIMELINE -->
+<section id="historia" class="section">
+  <div class="section-inner">
+    <p class="section-label">Cronologia</p>
+    <h2 class="section-title">Linha do Tempo</h2>
+    <p class="section-body">
+      Cada marco na história da Web foi um fio tecido num tapete de possibilidades.
+      Siga a trilha de invenções que mudaram para sempre o modo como a humanidade se comunica.
+    </p>
+
+    <div class="timeline">
+
+      <div class="tl-item">
+        <span class="tl-year">1969</span>
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <p class="tl-era">Prelúdio</p>
+          <h3 class="tl-heading">ARPANET — O Primeiro Fio</h3>
+          <p class="tl-text">A primeira mensagem eletrônica é transmitida entre UCLA e Stanford — a palavra "login", interrompida no "lo" por uma falha do sistema. Esse fragmento imperfeito foi o big bang das redes digitais.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <span class="tl-year">1983</span>
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <p class="tl-era">Fundação</p>
+          <h3 class="tl-heading">TCP/IP — A Língua Universal</h3>
+          <p class="tl-text">O protocolo TCP/IP se torna o padrão da ARPANET, criando a linguagem comum que permitiria que qualquer computador do mundo se comunicasse com qualquer outro. O nascimento da Internet moderna.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <span class="tl-year">1991</span>
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <p class="tl-era">Revelação</p>
+          <h3 class="tl-heading">A World Wide Web Nasce</h3>
+          <p class="tl-text">Tim Berners-Lee publica o primeiro website da história no servidor do CERN em Genebra. Uma proposta simples de compartilhamento de documentos transforma-se no maior repositório de conhecimento humano já criado.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <span class="tl-year">1995</span>
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <p class="tl-era">Efervescência</p>
+          <h3 class="tl-heading">Web 1.0 — A Era Estática</h3>
+          <p class="tl-text">Amazon, eBay e Yahoo surgem. As páginas são vitrines estáticas — texto e imagens sem interatividade. O Netscape Navigator leva a Web ao público em massa. O comércio eletrônico dá seus primeiros passos vacilantes.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <span class="tl-year">2004</span>
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <p class="tl-era">Revolução</p>
+          <h3 class="tl-heading">Web 2.0 — A Era Social</h3>
+          <p class="tl-text">O termo cunhado por Tim O'Reilly descreve uma Web onde os usuários são criadores. Surgem Facebook, YouTube, Wikipedia e Twitter. A inteligência coletiva transforma consumidores em produtores de conteúdo.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <span class="tl-year">2008</span>
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <p class="tl-era">Mobilidade</p>
+          <h3 class="tl-heading">A Web no Bolso</h3>
+          <p class="tl-text">O lançamento do iPhone em 2007 e do Android em 2008 redefine o acesso à Web. A tela de toque transforma a navegação em algo tátil e íntimo. Pela primeira vez, a humanidade carrega o mundo inteiro no bolso.</p>
+        </div>
+      </div>
+
+      <div class="tl-item">
+        <span class="tl-year">2020</span>
+        <div class="tl-dot"></div>
+        <div class="tl-content">
+          <p class="tl-era">Descentralização</p>
+          <h3 class="tl-heading">Web 3.0 — A Nova Fronteira</h3>
+          <p class="tl-text">Blockchain, NFTs, metaverso e inteligência artificial redefinem o que significa "estar online". A propriedade digital, a identidade descentralizada e as redes neurais prometem uma Web onde máquinas entendem o significado.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ERAS GRID -->
+<section id="eras" class="section">
+  <div class="section-inner">
+    <p class="section-label">Análise</p>
+    <h2 class="section-title">As Grandes Eras</h2>
+    <p class="section-body">
+      Cada geração da Web trouxe uma filosofia distinta sobre o que significa conectar mentes humanas através do éter digital.
+    </p>
+    <div class="eras-grid">
+
+      <div class="era-card">
+        <span class="era-num">I</span>
+        <p class="era-name">1991 — 2003</p>
+        <h3 class="era-title">Web 1.0 · Leitura</h3>
+        <p class="era-desc">Páginas estáticas em HTML puro. O usuário era apenas espectador — as informações fluíam num sentido único, de poucos para muitos. Uma biblioteca digital sem curador.</p>
+      </div>
+
+      <div class="era-card">
+        <span class="era-num">II</span>
+        <p class="era-name">2004 — 2015</p>
+        <h3 class="era-title">Web 2.0 · Escrita</h3>
+        <p class="era-desc">Plataformas sociais, blogs e wikis democratizaram a criação de conteúdo. Cada pessoa tornou-se uma emissora. A sabedoria das multidões encontrou seu palco.</p>
+      </div>
+
+      <div class="era-card">
+        <span class="era-num">III</span>
+        <p class="era-name">2016 — presente</p>
+        <h3 class="era-title">Web 3.0 · Propriedade</h3>
+        <p class="era-desc">Blockchain e contratos inteligentes devolvem ao usuário o controle de seus dados e ativos digitais. A Web semântica e a IA interpretam significado, não apenas palavras.</p>
+      </div>
+
+      <div class="era-card">
+        <span class="era-num">∞</span>
+        <p class="era-name">O Horizonte</p>
+        <h3 class="era-title">Web 4.0 · Imersão</h3>
+        <p class="era-desc">Realidade aumentada, gêmeos digitais e interfaces neurais. A distinção entre mundo físico e digital se dissolve. A Web torna-se o próprio tecido da realidade.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PIONEERS -->
+<section id="pioneiros" class="section">
+  <div class="section-inner">
+    <p class="section-label">Visionários</p>
+    <h2 class="section-title">Os Pioneiros</h2>
+    <p class="section-body">
+      Por trás de cada protocolo e cada linha de código há uma mente que ousou imaginar
+      um mundo diferente — e que teve a teimosia de construí-lo.
+    </p>
+    <div class="pioneers-row">
+      <div class="pioneer">
+        <h3 class="pioneer-name">Tim Berners-Lee</h3>
+        <p class="pioneer-role">Inventor da Web · 1991</p>
+        <p class="pioneer-bio">Físico britânico que, numa proposta chamada "Vague but Exciting", criou o HTML, o HTTP e a URL — os três pilares que sustentam cada página que já foi visitada.</p>
+      </div>
+      <div class="pioneer">
+        <h3 class="pioneer-name">Vint Cerf</h3>
+        <p class="pioneer-role">Pai da Internet · 1973</p>
+        <p class="pioneer-bio">Junto com Bob Kahn, projetou o TCP/IP, a língua franca que permite que bilhões de dispositivos se entendam. Chamado de "Pai da Internet", moldou a infraestrutura invisível do mundo moderno.</p>
+      </div>
+      <div class="pioneer">
+        <h3 class="pioneer-name">Marc Andreessen</h3>
+        <p class="pioneer-role">Criador do Mosaic · 1993</p>
+        <p class="pioneer-bio">Com 22 anos, criou o Mosaic — o primeiro navegador com suporte a imagens —, transformando a Web de ferramenta acadêmica em fenômeno cultural global.</p>
+      </div>
+      <div class="pioneer">
+        <h3 class="pioneer-name">Ada Lovelace</h3>
+        <p class="pioneer-role">Primeira Programadora · 1843</p>
+        <p class="pioneer-bio">Décadas antes do primeiro computador existir, Ada escreveu o primeiro algoritmo da história. Sua visão de que máquinas poderiam ir além de cálculos matemáticos foi profética.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>⚙ &nbsp; A Odisseia da Web &nbsp;·&nbsp; Dedicado à Humanidade Curiosa &nbsp;·&nbsp; MMXXV</p>
+</footer>
+
+<script>
+  // ─── STARFIELD ───────────────────────────────────────────────────────────
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+  let W, H;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function createStars(n) {
+    stars = [];
+    for (let i = 0; i < n; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.4 + 0.2,
+        a: Math.random(),
+        da: (Math.random() - 0.5) * 0.004,
+        dx: (Math.random() - 0.5) * 0.06,
+        dy: (Math.random() - 0.5) * 0.06,
+      });
+    }
+  }
+
+  function drawStars() {
+    ctx.clearRect(0, 0, W, H);
+    for (const s of stars) {
+      s.x = (s.x + s.dx + W) % W;
+      s.y = (s.y + s.dy + H) % H;
+      s.a = Math.max(0.05, Math.min(1, s.a + s.da));
+      if (s.a <= 0.05 || s.a >= 1) s.da *= -1;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(201,168,76,${s.a})`;
+      ctx.fill();
+    }
+    requestAnimationFrame(drawStars);
+  }
+
+  resize();
+  createStars(320);
+  drawStars();
+  window.addEventListener('resize', () => { resize(); createStars(320); });
+
+  // ─── PARTICLES ───────────────────────────────────────────────────────────
+  const pWrap = document.getElementById('particles');
+  for (let i = 0; i < 35; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.cssText = `
+      left:${Math.random()*100}%;
+      bottom:${Math.random()*30}%;
+      width:${Math.random()*3+1}px;
+      height:${Math.random()*3+1}px;
+      animation-duration:${8+Math.random()*12}s;
+      animation-delay:${Math.random()*10}s;
+    `;
+    pWrap.appendChild(p);
+  }
+
+  // ─── SCROLL REVEAL ───────────────────────────────────────────────────────
+  const reveal = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        reveal.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.tl-item, .era-card, .pioneer').forEach(el => reveal.observe(el));
+
+  // stagger era-cards
+  document.querySelectorAll('.era-card').forEach((c, i) => {
+    c.style.transitionDelay = `${i * 0.12}s`;
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exemplo — Box Model</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #f7f8fc;
+      color: #1a1a2e;
+    }
+
+    h1 { font-size: 1.8rem; margin-bottom: .5rem; }
+    h2 { font-size: 1.2rem; margin: 2rem 0 .75rem; color: #4a6cf7; }
+    p  { margin-bottom: .75rem; line-height: 1.6; }
+    a.voltar {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      color: #4a6cf7;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    a.voltar:hover { text-decoration: underline; }
+
+    /* ---- DEMO 1: Anatomia do box model ---- */
+    .demo-anatomia {
+      background: #fde68a; /* margin */
+      padding: 30px;
+      display: inline-block;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+    }
+    .demo-anatomia .borda {
+      border: 8px solid #f59e0b;
+      background: transparent;
+      padding: 20px;
+    }
+    .demo-anatomia .padding-area {
+      background: #bbf7d0;
+      padding: 20px;
+    }
+    .demo-anatomia .conteudo {
+      background: #93c5fd;
+      padding: 16px 24px;
+      font-weight: 700;
+      color: #1e3a5f;
+      font-size: .9rem;
+      text-align: center;
+    }
+    .legenda {
+      font-size: .75rem;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .leg-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+    .leg-color {
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+    }
+
+    /* ---- DEMO 2: content-box vs border-box ---- */
+    .comparacao {
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .cb-box {
+      box-sizing: content-box;
+      width: 200px;
+      padding: 20px;
+      border: 6px solid #e07070;
+      background: #fff0f0;
+      font-size: .85rem;
+      line-height: 1.5;
+    }
+
+    .bb-box {
+      box-sizing: border-box;
+      width: 200px;
+      padding: 20px;
+      border: 6px solid #6abf6a;
+      background: #f0fff4;
+      font-size: .85rem;
+      line-height: 1.5;
+    }
+
+    .cb-box strong { color: #e07070; }
+    .bb-box strong { color: #3a8a3a; }
+
+    /* ---- DEMO 3: margin collapse ---- */
+    .collapse-demo {
+      background: #f0f0f0;
+      padding: 8px;
+      border: 2px dashed #aaa;
+      margin-bottom: 1.5rem;
+    }
+    .bloco-a {
+      background: #93c5fd;
+      padding: 12px;
+      margin-bottom: 30px; /* margin de 30px */
+      font-size: .85rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    .bloco-b {
+      background: #fde68a;
+      padding: 12px;
+      margin-top: 20px; /* margin de 20px */
+      font-size: .85rem;
+      font-weight: 700;
+      text-align: center;
+    }
+    .nota {
+      background: #eff6ff;
+      border-left: 4px solid #4a6cf7;
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: .9rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ---- DEMO 4: padding shorthand ---- */
+    .shorthand-grid {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+    .sh-box {
+      background: #e0e7ff;
+      border: 2px solid #4a6cf7;
+      border-radius: 6px;
+      font-size: .78rem;
+      font-family: 'Cascadia Code', 'Consolas', monospace;
+    }
+    .sh-box.p1 { padding: 32px; }
+    .sh-box.p2 { padding: 32px 8px; }
+    .sh-box.p3 { padding: 32px 8px 4px; }
+    .sh-box.p4 { padding: 32px 8px 4px 24px; }
+
+    /* ---- DEMO 5: box inspector ---- */
+    .inspector-wrap {
+      background: #1e1e2e;
+      border-radius: 10px;
+      padding: 24px;
+      color: #cdd6f4;
+      font-family: 'Cascadia Code', 'Consolas', monospace;
+      font-size: .85rem;
+      margin-bottom: 1.5rem;
+    }
+    .inspector-wrap .ex-box {
+      background: #313244;
+      width: 280px;
+      height: 120px;
+      margin: 0 auto;
+      padding: 20px;
+      border: 4px solid #a6e3a1;
+      position: relative;
+    }
+    .inspector-wrap label {
+      display: block;
+      margin-top: 12px;
+      color: #a6adc8;
+      font-size: .8rem;
+    }
+    .inspector-wrap input[type=range] {
+      width: 100%;
+      accent-color: #a6e3a1;
+    }
+    .size-readout {
+      text-align: center;
+      color: #a6e3a1;
+      font-size: .95rem;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="../index.html" class="voltar">← Voltar para a aula</a>
+  <h1>Exemplos — Box Model</h1>
+
+  <!-- 1 — ANATOMIA -->
+  <h2>1. Anatomia da caixa</h2>
+  <p>Cada elemento HTML é uma caixa com quatro camadas. Observe as cores abaixo:</p>
+
+  <div class="legenda">
+    <span class="leg-item"><span class="leg-color" style="background:#fde68a"></span>margin</span>
+    <span class="leg-item"><span class="leg-color" style="background:#f59e0b"></span>border</span>
+    <span class="leg-item"><span class="leg-color" style="background:#bbf7d0"></span>padding</span>
+    <span class="leg-item"><span class="leg-color" style="background:#93c5fd"></span>content</span>
+  </div>
+
+  <div class="demo-anatomia">
+    <div class="borda">
+      <div class="padding-area">
+        <div class="conteudo">Sou o conteúdo!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 — content-box vs border-box -->
+  <h2>2. content-box × border-box</h2>
+  <p>Ambas as caixas têm <code>width: 200px</code>, <code>padding: 20px</code> e <code>border: 6px</code>. Veja como o tamanho final difere:</p>
+
+  <div class="comparacao">
+    <div class="cb-box">
+      <strong>content-box (padrão)</strong><br>
+      width: 200px<br>
+      padding: 20px (cada lado)<br>
+      border: 6px (cada lado)<br>
+      ─────────────────────<br>
+      Largura total: <strong>252px</strong><br>
+      <code>200 + 40 + 12 = 252</code>
+    </div>
+    <div class="bb-box">
+      <strong>border-box</strong><br>
+      width: 200px<br>
+      padding: 20px (já incluído)<br>
+      border: 6px (já incluído)<br>
+      ─────────────────────<br>
+      Largura total: <strong>200px</strong><br>
+      <code>width inclui tudo!</code>
+    </div>
+  </div>
+
+  <div class="nota">
+    <strong>Por que usar border-box?</strong>
+    Se você define <code>width: 50%</code> em dois elementos que dividem uma linha, com <code>content-box</code>
+    eles vão ultrapassar os 100% assim que você adicionar qualquer padding ou border. Com <code>border-box</code>
+    os 50% sempre serão respeitados.
+  </div>
+
+  <!-- 3 — Margin collapse -->
+  <h2>3. Colapso de margens (<em>margin collapse</em>)</h2>
+  <p>Quando duas margens verticais se encontram, o CSS utiliza a <strong>maior</strong> delas, não a soma. O espaço entre os blocos abaixo é 30px (não 50px).</p>
+
+  <div class="collapse-demo">
+    <div class="bloco-a">Bloco A — margin-bottom: 30px</div>
+    <div class="bloco-b">Bloco B — margin-top: 20px</div>
+  </div>
+
+  <div class="nota">
+    Colapso acontece apenas em margens <strong>verticais</strong> entre elementos de <em>block</em>.
+    Não ocorre com elementos flex/grid, nem em elementos com padding, border ou overflow diferente de visible.
+  </div>
+
+  <!-- 4 — Padding shorthand -->
+  <h2>4. Shorthand de padding e margin</h2>
+  <p>O shorthand segue a ordem <strong>topo → direita → baixo → esquerda</strong> (sentido horário). Valores omitidos espelham o oposto.</p>
+
+  <div class="shorthand-grid">
+    <div>
+      <code>padding: 32px</code>
+      <div class="sh-box p1">1 valor: todos os lados</div>
+    </div>
+    <div>
+      <code>padding: 32px 8px</code>
+      <div class="sh-box p2">2 valores: vertical | horizontal</div>
+    </div>
+    <div>
+      <code>padding: 32px 8px 4px</code>
+      <div class="sh-box p3">3 valores: top | horiz | bottom</div>
+    </div>
+    <div>
+      <code>padding: 32px 8px 4px 24px</code>
+      <div class="sh-box p4">4 valores: ↑ → ↓ ←</div>
+    </div>
+  </div>
+
+  <!-- 5 — Inspector interativo -->
+  <h2>5. Controle interativo de padding</h2>
+  <p>Ajuste o slider para ver como o padding afeta o tamanho da caixa em tempo real.</p>
+
+  <div class="inspector-wrap">
+    <div class="ex-box" id="inspectorBox">
+      <div style="background:#a6e3a1; width:100%; height:100%;"></div>
+    </div>
+    <label>padding: <span id="paddingVal">20</span>px
+      <input type="range" min="0" max="60" value="20" id="paddingRange" />
+    </label>
+    <div class="size-readout" id="sizeReadout">Largura total: calculando…</div>
+  </div>
+
+  <script>
+    const box     = document.getElementById('inspectorBox');
+    const range   = document.getElementById('paddingRange');
+    const valSpan = document.getElementById('paddingVal');
+    const readout = document.getElementById('sizeReadout');
+
+    function update() {
+      const p = range.value;
+      box.style.padding = p + 'px';
+      valSpan.textContent = p;
+      readout.textContent =
+        'Largura no layout: ' + box.offsetWidth + 'px '
+        + '(content-box: 280 + ' + (p * 2) + 'px padding = ' + (280 + p * 2) + 'px)';
+    }
+
+    range.addEventListener('input', update);
+    update();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,66 @@
+1.
+<a href="https://www.google.com.br" targuet>Google</a>
+
+2.
+
+
+3.
+<img>
+
+4.
+a - <p></p>
+b - id
+c - "destaque"
+d - "Bem-vindo ao site!"
+
+5.
+A. <i> | Itálico
+B. <ol> | Lista Ordenada
+C. <mark> | Marcação de texto
+D. <h1> | Título
+E. <ul> | Lista Não Ordenada
+
+6. V - V - F - V - F
+
+7. V - V - F - V - F
+
+8.
+A. <main |> Conteúdo Principal
+B. <footer> | Rodapé
+C. <nav> | Navegação
+D. <aside> | Conteúdo lateral
+
+9.
+    Considere o seguinte trecho de código HTML e preencha as lacunas
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Meu primeiro documento</title>
+    </head>
+    <body>
+        <h1>Saudações! (título)</h1>
+        <p>Este é o primeiro parágrafo do documento.</p>
+        <p>E este é o segundo parágrafo.</p>
+    </body>
+</html>
+
+10. 
+C
+
+11. 
+Preencha as lacunas sobre comandos do Linux:
+
+    a make directory escrito (mkdir) é o comando utilizado para criar pastas.
+
+    b Para navegar entre pastas utilizamos o comando (cd) também conhecido como
+    change directory.
+
+    c Utilizamos o comando copy escrito (cp) para copiar arquivos e ou pastas.
+
+    d Utilizamos o comando remove escrito (rm) para remover arquivos e ou pastas.
+
+    e Podemos utilizar o comando list escrito (ls) para listar os arquivos e pastas de um
+    diretório.
+
+

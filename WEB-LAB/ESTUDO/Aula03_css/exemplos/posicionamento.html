@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exemplo — Posicionamento CSS</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f7f8fc;
+      color: #1a1a2e;
+      padding-top: 60px; /* deixa espaço para o fixed */
+    }
+
+    .page-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 1.5rem 2rem 3rem;
+    }
+
+    h1 { font-size: 1.8rem; margin-bottom: .5rem; }
+    h2 { font-size: 1.2rem; margin: 2.5rem 0 .75rem; color: #4a6cf7; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; }
+    p  { margin-bottom: .75rem; line-height: 1.6; font-size: .95rem; }
+    code {
+      font-family: 'Consolas', monospace;
+      font-size: .875em;
+      background: #eef2ff;
+      color: #3558e0;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    a.voltar {
+      display: inline-block;
+      color: #4a6cf7;
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+    }
+    a.voltar:hover { text-decoration: underline; }
+    .nota {
+      background: #eff6ff;
+      border-left: 4px solid #4a6cf7;
+      padding: 10px 14px;
+      border-radius: 0 8px 8px 0;
+      font-size: .9rem;
+      margin: 1rem 0;
+    }
+    pre {
+      background: #1e1e2e;
+      color: #cdd6f4;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-family: 'Consolas', monospace;
+      font-size: .85rem;
+      line-height: 1.7;
+      margin: .75rem 0 1rem;
+    }
+    pre .c { color: #585b70; font-style: italic; }
+
+    /* =====================
+       NAVBAR FIXA (fixed)
+       ===================== */
+    .demo-navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 24px;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.3);
+      font-size: .9rem;
+    }
+    .demo-navbar .logo { color: #a6e3a1; font-weight: 700; }
+    .demo-navbar .tag  {
+      background: #313244;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: .75rem;
+      color: #89dceb;
+    }
+
+    /* =====================
+       STATIC
+       ===================== */
+    .static-demo {
+      background: #f0f4ff;
+      border: 2px dashed #6c8ebf;
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1rem;
+    }
+    .static-demo .bl {
+      background: #93c5fd;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: .85rem;
+      font-weight: 700;
+      color: #1e3a5f;
+    }
+
+    /* =====================
+       RELATIVE
+       ===================== */
+    .relative-demo {
+      background: #f0f4ff;
+      border: 2px dashed #6c8ebf;
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      gap: 10px;
+      margin-bottom: 1rem;
+      min-height: 80px;
+    }
+    .relative-demo .bl {
+      background: #93c5fd;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: .85rem;
+      font-weight: 700;
+      color: #1e3a5f;
+    }
+    .relative-demo .rel {
+      background: #fde68a;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: .85rem;
+      font-weight: 700;
+      color: #5a3a00;
+      position: relative;
+      top: 20px;
+      left: 15px;
+    }
+
+    /* =====================
+       ABSOLUTE
+       ===================== */
+    .absolute-demo {
+      position: relative;           /* ← referência para o absolute */
+      background: #f0f4ff;
+      border: 2px dashed #6c8ebf;
+      height: 160px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      padding: 12px;
+    }
+    .absolute-demo .normal {
+      background: #93c5fd;
+      display: inline-block;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: .85rem;
+      font-weight: 700;
+      color: #1e3a5f;
+    }
+    .absolute-demo .abs {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: #e07070;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: .8rem;
+      font-weight: 700;
+    }
+    .absolute-demo .abs-bottom {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #4a6cf7;
+      color: #fff;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: .8rem;
+      font-weight: 700;
+    }
+
+    /* =====================
+       CARD COM BADGE (absolute prático)
+       ===================== */
+    .card-wrap {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .product-card {
+      position: relative;           /* ← referência */
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      width: 200px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    }
+    .product-card .badge-novo {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #6abf6a;
+      color: #fff;
+      font-size: .7rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      letter-spacing: .05em;
+    }
+    .product-card .badge-off {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: #e07070;
+      color: #fff;
+      font-size: .7rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+    .product-card img-placeholder {
+      display: block;
+      width: 100%;
+      height: 80px;
+      background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+    .product-card h4 { font-size: .9rem; margin-bottom: 4px; }
+    .product-card p  { font-size: .8rem; color: #64748b; margin: 0; }
+
+    /* =====================
+       STICKY
+       ===================== */
+    .sticky-demo-wrap {
+      height: 260px;
+      overflow-y: scroll;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      background: #fafafa;
+    }
+    .sticky-section {
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .sticky-header {
+      position: sticky;
+      top: 0;
+      background: #4a6cf7;
+      color: #fff;
+      padding: 10px 16px;
+      font-size: .9rem;
+      font-weight: 700;
+      z-index: 1;
+    }
+    .sticky-content {
+      padding: 12px 16px;
+      font-size: .85rem;
+      color: #64748b;
+      line-height: 1.7;
+    }
+
+    /* =====================
+       Z-INDEX
+       ===================== */
+    .zindex-demo {
+      position: relative;
+      height: 140px;
+      background: #f0f4ff;
+      border: 2px dashed #6c8ebf;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    .z-box {
+      position: absolute;
+      width: 120px;
+      height: 80px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: .85rem;
+      color: #fff;
+    }
+    .z1 { background: #93c5fd; top: 20px; left: 20px;  z-index: 1; }
+    .z2 { background: #fde68a; color: #5a3a00; top: 40px; left: 60px;  z-index: 2; }
+    .z3 { background: #e07070; top: 10px; left: 120px; z-index: 3; }
+
+    .interactive-z { margin-bottom: 1.5rem; }
+    .interactive-z label {
+      font-size: .85rem;
+      margin-bottom: 4px;
+      display: block;
+      font-family: 'Consolas', monospace;
+    }
+    .interactive-z input { accent-color: #4a6cf7; }
+  </style>
+</head>
+<body>
+
+  <!-- FIXED NAVBAR demo -->
+  <nav class="demo-navbar">
+    <span class="logo">WebLab</span>
+    <span>Demonstração de <code style="background:#313244;color:#a6e3a1;border-radius:4px;padding:2px 6px;">position: fixed</code></span>
+    <span class="tag">↑ Esta barra está fixada no topo</span>
+  </nav>
+
+  <div class="page-wrap">
+    <a href="../index.html" class="voltar">← Voltar para a aula</a>
+    <h1>Exemplos — Posicionamento CSS</h1>
+
+    <!-- ---- FIXED ---- -->
+    <h2>position: fixed</h2>
+    <p>A barra de navegação preta no topo desta página usa <code>position: fixed</code>. Role a página para confirmar que ela não se move.</p>
+    <pre><code>.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;  <span class="c">/* fica sobre o conteúdo */</span>
+}</code></pre>
+
+    <!-- ---- STATIC ---- -->
+    <h2>position: static (padrão)</h2>
+    <p>Todos os elementos HTML são <code>static</code> por padrão. Eles seguem o fluxo normal do documento. As propriedades <code>top</code>, <code>left</code>, etc. não têm efeito.</p>
+    <div class="static-demo">
+      <div class="bl">Bloco 1</div>
+      <div class="bl">Bloco 2</div>
+      <div class="bl">Bloco 3</div>
+    </div>
+
+    <!-- ---- RELATIVE ---- -->
+    <h2>position: relative</h2>
+    <p>O elemento é deslocado <strong>em relação à sua posição original</strong>. Ele continua ocupando o espaço original no fluxo (note o "buraco" abaixo do item amarelo).</p>
+    <div class="relative-demo">
+      <div class="bl">Bloco 1</div>
+      <div class="rel">relative<br><small>top:20 left:15</small></div>
+      <div class="bl">Bloco 3</div>
+    </div>
+    <pre><code>.rel {
+  position: relative;
+  top: 20px;
+  left: 15px;  <span class="c">/* desloca, mas ocupa o espaço original */</span>
+}</code></pre>
+
+    <!-- ---- ABSOLUTE ---- -->
+    <h2>position: absolute</h2>
+    <p>O elemento é <strong>removido do fluxo</strong> e posicionado em relação ao <strong>ancestral posicionado mais próximo</strong> (aquele com position ≠ static). Se não houver nenhum, usa o viewport.</p>
+    <div class="absolute-demo">
+      <div class="normal">elemento normal (static)</div>
+      <div class="abs">absolute<br>top:8 right:8</div>
+      <div class="abs-bottom">absolute — bottom:8, centrado</div>
+    </div>
+    <pre><code>.container {
+  position: relative; <span class="c">/* cria o contexto de posicionamento */</span>
+}
+
+.abs {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}</code></pre>
+
+    <!-- ---- CASO PRÁTICO: BADGE ---- -->
+    <h2>Caso prático: card com badge</h2>
+    <p>Um uso clássico de <code>absolute</code> dentro de um container <code>relative</code>.</p>
+    <div class="card-wrap">
+      <div class="product-card">
+        <span class="badge-novo">NOVO</span>
+        <img-placeholder></img-placeholder>
+        <h4>Produto Alpha</h4>
+        <p>R$ 199,00</p>
+      </div>
+      <div class="product-card">
+        <span class="badge-off">-30%</span>
+        <img-placeholder></img-placeholder>
+        <h4>Produto Beta</h4>
+        <p><s style="color:#aaa">R$ 299,00</s> R$ 209,00</p>
+      </div>
+    </div>
+    <pre><code>.card  { position: relative; }  <span class="c">/* cria contexto */</span>
+
+.badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}</code></pre>
+
+    <!-- ---- STICKY ---- -->
+    <h2>position: sticky</h2>
+    <p>O elemento comporta-se como <code>relative</code> até atingir o limiar de scroll definido; então gruda como se fosse <code>fixed</code>. Role a caixa abaixo:</p>
+    <div class="sticky-demo-wrap">
+      <div class="sticky-section">
+        <div class="sticky-header">Seção A — gruda ao rolar ↓</div>
+        <div class="sticky-content">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        </div>
+      </div>
+      <div class="sticky-section">
+        <div class="sticky-header">Seção B — gruda ao rolar ↓</div>
+        <div class="sticky-content">
+          Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor.
+        </div>
+      </div>
+      <div class="sticky-section">
+        <div class="sticky-header">Seção C — gruda ao rolar ↓</div>
+        <div class="sticky-content">
+          Sunt in culpa qui officia deserunt mollit anim id est laborum.
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          Nulla ullamcorper, ante id commodo luctus, ante leo maximus leo, non viverra quam ligula quis eros. Ut consectetur ultrices est. Phasellus ac ipsum dolor. Vivamus a metus quis ligula imperdiet cursus. Integer ornare leo arcu, et fringilla erat porta vel. In id sagittis mauris. Quisque pharetra, diam eu hendrerit pellentesque, libero ipsum volutpat quam, a bibendum arcu mauris nec metus. Donec feugiat felis ut lobortis varius. Maecenas eu quam maximus, placerat erat at, sodales purus. Vestibulum sit amet malesuada mi. Nullam feugiat diam a lacus venenatis, sed sagittis nulla dictum. Maecenas ipsum tortor, consectetur non scelerisque ut, accumsan sit amet purus.
+        </div>
+      </div>
+    </div>
+    <pre><code>.section-header {
+  position: sticky;
+  top: 0;          <span class="c">/* gruda quando chegar a 0px do topo */</span>
+  background: #fff;
+  z-index: 1;
+}</code></pre>
+
+    <!-- ---- Z-INDEX ---- -->
+    <h2>z-index — ordem de empilhamento</h2>
+    <p>Quando elementos se sobrepõem, o <code>z-index</code> determina qual fica na frente. Valores maiores aparecem sobre os menores.</p>
+    <div class="zindex-demo">
+      <div class="z-box z1">z-index: 1</div>
+      <div class="z-box z2">z-index: 2</div>
+      <div class="z-box z3">z-index: 3</div>
+    </div>
+
+    <div class="interactive-z">
+      <p>Altere o z-index de cada caixa interativamente:</p>
+      <label>Caixa Azul (z-index: <span id="z1v">1</span>)
+        <input type="range" min="-1" max="5" value="1" id="z1r" />
+      </label>
+      <label>Caixa Amarela (z-index: <span id="z2v">2</span>)
+        <input type="range" min="-1" max="5" value="2" id="z2r" />
+      </label>
+      <label>Caixa Vermelha (z-index: <span id="z3v">3</span>)
+        <input type="range" min="-1" max="5" value="3" id="z3r" />
+      </label>
+    </div>
+
+    <div class="nota">
+      <strong>Lembre-se:</strong> <code>z-index</code> só funciona em elementos com <code>position</code>
+      diferente de <code>static</code> (<code>relative</code>, <code>absolute</code>, <code>fixed</code> ou <code>sticky</code>).
+    </div>
+
+  </div><!-- /page-wrap -->
+
+  <script>
+    const z1box = document.querySelector('.z1');
+    const z2box = document.querySelector('.z2');
+    const z3box = document.querySelector('.z3');
+
+    document.getElementById('z1r').addEventListener('input', e => {
+      z1box.style.zIndex = e.target.value;
+      document.getElementById('z1v').textContent = e.target.value;
+    });
+    document.getElementById('z2r').addEventListener('input', e => {
+      z2box.style.zIndex = e.target.value;
+      document.getElementById('z2v').textContent = e.target.value;
+    });
+    document.getElementById('z3r').addEventListener('input', e => {
+      z3box.style.zIndex = e.target.value;
+      document.getElementById('z3v').textContent = e.target.value;
+    });
+  </script>
+
+</body>
+</html>
