@@ -1,3 +1,5 @@
+// Define o tamanho do vetor de forma dinamica
+
 #include <iostream>
 
 using namespace std;
