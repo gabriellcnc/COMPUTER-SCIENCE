@@ -1,0 +1,22 @@
+MEDELO LOGICO
+# - chave primaria
+@ - chave estrangeira
+
+=========================================================================================================================================================================
+
+	Tab. Aluno:
+matricula#, nome, dataNasc, codCidade#
+			    	      codCidade referencia
+Cidade(código)
+
+	
+	Tab. Cidade:
+codigo#, nome, UF, numHabiantes
+
+	
+	Tab. Hobby: 
+codigo#, descricao, obs
+
+
+	Tabg. AlunoHobby:
+matricula@#, codHobby@#, frquencia
