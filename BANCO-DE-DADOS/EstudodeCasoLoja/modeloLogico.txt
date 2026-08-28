@@ -1,0 +1,43 @@
+MODELO LÓGICO
+# - chave primária
+@ - chave estrangeira
+
+  Tab. Empresa: cnpj#,razaoSocial,endereco
+
+  Tab. Produto: codigo#,descricao,valorUnitario,qtdEstoque,codEmpresa@
+                codEmpresa referencia Empresa (CNPJ)
+                           
+  Tab. Cliente: codigo#,nome,endereco,telefone1,telefone2
+
+
+
+  Tab. Funcionario: codigo#,nome,salario,telefone,codEmpresa@
+                codEmpresa referencia Empresa (CNPJ)
+
+  Tab. Pedido: codigo#,dataEntrega,valorTotal,codCliente@, codFuncionario@
+                codCliente referencia Cliente (codigo)
+                codFuncionario referencia Funcionario (codigo)
+
+  Tab. Pedido: codigo#,dataEntrega,valorTotal,codCliente@, codFuncionario@
+                codCliente referencia Cliente (codigo)
+                codFuncionario referencia Funcionario (codigo)
+
+ Tab. Itens: codPedido@#, codProduto@#, qtd
+             codPedido referencia Pedido(codigo)
+             codProduto referencia Produto(codigo)
+
+ Tab. NotaFiscal: numero#,serie,dataEmissao,valorTotal,tipo,status, codPedido@
+                codPedido referencia Pedido (codigo)
+
+
+
+
+
+
+
+
+
+
+
+
+
