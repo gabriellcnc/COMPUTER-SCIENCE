@@ -1,3 +1,4 @@
+
 CREATE TABLE Empresa (
  cnpj VARCHAR(20) PRIMARY KEY,
  razaoSocial VARCHAR(50) NOT NULL,
@@ -187,64 +188,93 @@ INSERT INTO NotaFiscal (numero, serie, dataEmissao, valorTotal, tipo, status, co
 
 -- EXERCICIOS --
 
--- 1.
+-- 01:Liste o Cod, nome e os dois telefones de todos os clientes cadastrados no sistema, ordenando-os em ordem alfabética pelo nome.
 
-SELECT 		codigo, nome, telefone1, telefone2
-FROM 		Cliente
-Order BY 	nome;
+SELECT codigo, nome, telefone1, telefone2
+FROM Cliente
+ORDER BY nome ASC;
+--SELECT  seleciona código, nome e os dois telefones.
+--FROM Cliente → busca os dados na tabela Cliente.
+--ORDER BY nome ASC → ordena os clientes em ordem alfabética crescente pelo nome.
+--DSC seria descendente
 
--- 2.
+-- 02:Elabore uma consulta para identificar produtos com estoque baixo (quantidade inferior a 40 unidades), exiba o codigo, descrição, quantidade em estoque e valor unitario.
 
-SELECT 	codigo, descricao, qtdEstoque, valorUnitario
-From 	Produto
-WHERE 	qtdEstoque <40;
+SELECT codigo, descricao, qtdEstoque, valorUnitario
+FROM Produto
+WHERE qtdEstoque < 40;
 
--- 3.
+-- 03: faça uma consulta para listar o valor e a data de todos os pedidos liste apenas aqueles com valores entre R$50 e 200 e realizados nos meses de fevereiro e abril:
 
-SELECT	codigo, dataEntrega, valorTotal
-FROM 	Pedido
-WHERE	valorTotal >= 50 and valorTotal <= 200
-		and
-		(extract (month from dataEntrega) = 02 or
-		extract (month from dataEntrega) = 04)
+SELECT valorTotal, dataEntrega
+FROM Pedido
+WHERE valorTotal BETWEEN 50 AND 200
+AND EXTRACT(MONTH FROM dataEntrega) IN (2, 4);
 
--- 4.
+-- 04: crie uma consulta para listar todas as notas fiscais emitidas a partir do dia 10/12/2026.
 
-SELECT * FROM NotaFiscal
+SELECT numero, serie, dataEmissao, valorTotal, tipo, status, codPedido
+FROM NotaFiscal
+WHERE dataEmissao >= '2022-12-10';
 
-SELECT	numero, dataEmissao
-FROM	NotaFiscal
-WHERE	dataEmissao > '10/12/2026';
+-- 05 faça uma constulta listar todas o nome, endereço de todos cliente que sao do RS e nao possuem 2 telefones cadastrados:
 
--- 5.
+SELECT nome, endereco
+FROM Cliente
+WHERE endereco LIKE '%RS%'
+AND (telefone1 IS NULL OR telefone2 IS NULL);
 
-SELECT * FROM Cliente
+-- 06 Escreva uma consulta que exiba o nome de cada funcionario e a razao social da empresa de qual ele trabalha.
 
-SELECT	nome, endereco
-FROM	Cliente
-WHERE 	UPPER(endereco) LIKE '%RS%'
-	  	and telefone2 is null;
+SELECT Funcionario.nome, Empresa.razaoSocial
+FROM Funcionario
+INNER JOIN Empresa
+ON Empresa.cnpj = Funcionario.codEmpresa;
 
+-- 07 Elabore uma consulta que traga a lista de pedidos cadastrados, exibindo o numero do pedido, a data de entrega, o valor total e o nome do cliente comprador.
 
---JOINS--
+SELECT Pedido.codigo, Pedido.dataEntrega, Pedido.valorTotal, Cliente.nome
+FROM Pedido
+INNER JOIN Cliente
+ON Pedido.codCliente = Cliente.codigo;
 
--- 6.
+-- 08 Crie uma consulta para relacionar cada pedido ao funcionario que realizou a venda, mostrando o numero do pedido, o nome do vendedor o valor total do pedido.
 
-SELECT 	funcionario.nome, empresa.razaoSocial
-FROM 	Funcionario INNER JOIN empresa ON
-		empresa.cnpj = funcionario.codEmpresa
+SELECT Pedido.codigo, Funcionario.nome, Pedido.valorTotal
+FROM Pedido
+INNER JOIN Funcionario
+ON Pedido.codFuncionario = Funcionario.codigo;
 
--- 7.
-
-SELECT	pedido.codigo, pedido.dataEntrega, pedido.valorTotal, cliente.nome
-FROM	Pedido INNER JOIN Cliente ON
-		cliente.codigo = pedido.codCliente
-
--- 8.
+-- 09
 
 SELECT * FROM Pedido
-SELECT * FROM Funcionario
 
-SELECT	pedido.codigo, funcionario.nome, pedido.valorTotal
-FROM	Pedido INNER JOIN Funcionario ON
-		funcionario.codigo = pedido.codfuncionario
+SELECT itens.codPedido, Produto.descricao, itens.qtd, Produto.valorUnitario
+FROM itens
+INNER JOIN Produto
+ON itens.codProduto = Produto.codigo
+ORDER BY itens.codPedido;
+
+-- 10
+
+SELECT NotaFiscal.numero, NotaFiscal.dataEmissao, Pedido.dataEntrega
+FROM NotaFiscal
+INNER JOIN Pedido
+ON NotaFiscal.codPedido = Pedido.codigo;
+
+-- 11 
+
+SELECT * FROM CLIENTE
+SELECT * FROM FUNCIONARIO
+SELECT * FROM PEDIDO
+
+SELECT Cliente.nome AS cliente, Pedido.codigo, Funcionario.nome AS vendedor
+FROM Pedido 
+INNER JOIN Cliente
+ON Pedido.codCliente = Cliente.codigo
+INNER JOIN Funcionario
+ON Pedido.codFuncionario = Funcionario.codigo;
+
+-- 12
+
+SELECT 
