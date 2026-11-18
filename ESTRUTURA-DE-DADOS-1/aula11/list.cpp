@@ -87,6 +87,43 @@ namespace UPF{
             return p;
         }
 
+        void erase(UPF::node* p){ // p possui o end. de mem. a ser deletado
+            if(p == first){ // é o primeiro
+                first = first->next;
+                first->previous = nullptr;
+            }
+            if(p == last){ // é o último
+                last = last->previous;
+                last->next = nullptr;
+            }
+            if(p->previous != nullptr){// existe um anterior
+                p->previous->next = p->next;
+            }
+            if(p->next != nullptr){ // existe um posterior 
+                p->next->previous = p->previous;
+            }
+            delete p;
+            num_nodes--;
+        }
+
+        void pop_back(){
+            erase(last);
+        }
+
+        void pop_front(){
+            erase(first);
+        }
+
+        void remove(const std::string &s){
+            node* p = first;
+            while (p != nullptr){
+                if(s == p->value){
+                    erase(p);
+                }
+                p = p->next;
+            }
+        }
+
     }; // Struct list
 
 }   // Namespace UPF
