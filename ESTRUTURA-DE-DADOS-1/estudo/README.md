@@ -18,6 +18,12 @@ Material organizado a partir dos conteúdos das aulas de C++ de Estrutura de Dad
 12. [Comparadores e ordenação de structs](12_comparadores_structs.md)
 13. [Exercícios integradores](13_exercicios_integradores.md)
 14. [Revisão rápida](14_revisao_rapida.md)
+15. [Ponteiros](15_ponteiros.md)
+16. [Memória dinâmica](16_memoria_dinamica.md)
+17. [std::vector](17_std_vector.md)
+18. [Listas encadeadas](18_listas_encadeadas.md)
+19. [Pilhas](19_pilhas.md)
+20. [Filas](20_filas.md)
 
 ## Como usar esta pasta
 
